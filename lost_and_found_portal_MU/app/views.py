@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from .forms import UserForm
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 
 
 # Create your views here.
@@ -38,4 +38,28 @@ def signup(request):
     else:
         form = UserForm()
     return render(request, 'app/authentication/signup.html', {'form': form})
+
+
+# Login view
+def signin(request):
+    if request.method == 'POST':
+        email_ = request.POST.get('email')
+        password_ = request.POST.get('password')
+        try:
+            user = UserModel.objects.get(email=email_)
+            if check_password(password_, user.password):
+                # request.session['user_id'] = user.id
+                fn = user.name.split()[0]
+                un = fn.lower() + str(user.id)
+                request.session['username'] = un
+                messages.success(request, f"Welcome back, {un}!")
+                return redirect('home')
+            else :
+                messages.error(request, 'Invalid email or password.')
+        except UserModel.DoesNotExist:
+            messages.error(request, 'User does not exist. Please sign up.')
+    return render(request, 'app/authentication/signin.html')
+
+
+
 
