@@ -1,16 +1,14 @@
 from django import forms
-from .models import Items
+from .models import Items, UserModel
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm 
 
-class UserForm(UserCreationForm):
-    name = forms.CharField(max_length=30, required=True, help_text='Required. Enter your full name.')
-    phone_number = forms.CharField(max_length=15, required=True, help_text='Optional. Enter your phone number.')
-    email = forms.EmailField(max_length=50, required=True, help_text='Required. Enter a valid email address.')
-    profile_img = forms.ImageField(required=False)
+class UserForm(forms.ModelForm):
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
+    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
     class Meta:
-        model = User
-        fields = ['name', 'email', 'password1', 'password2', 'phone_number', 'profile_img']
+        model = UserModel
+        fields = ['name', 'email', 'password1', 'password2']
 
 
 class Items(forms.ModelForm):
