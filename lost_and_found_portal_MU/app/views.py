@@ -4,7 +4,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from .forms import UserForm
+from .forms import SignupForm
+from .forms import VerificationForm
+# from .forms import UserForm
 from django.contrib.auth.hashers import make_password, check_password
 
 
@@ -13,17 +15,27 @@ def home(request):
     return render(request, 'app/basic/home.html')
 
 
+# Item List
 
 def itemList(request):
+    user_id = request.session.get('user_id')
+    if not user_id:
+        messages.error(request, 'Please Login first.')
+    try:
+        user = UserModel.objects.get(id=user_id)
+    except UserModel.DoesNotExist:
+        messages.error(request, 'User not found!')
+        return redirect('signin')
+    
     items = Items.objects.all().order_by('-created_at')
-    return render(request, 'app/basic/items.html')
+    return render(request, 'app/basic/items.html', {'items' : items, 'user' : user})
 
 
 
 # Signup view
 def signup(request):
     if request.method == 'POST':
-        form = UserForm(request.POST, request.FILES)
+        form = SignupForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save(commit=False)
             user.password = make_password(form.cleaned_data['password1'])
@@ -36,7 +48,7 @@ def signup(request):
         else:
             messages.error(request, 'Invalid Credentials. Try Again.')
     else:
-        form = UserForm()
+        form = SignupForm()
     return render(request, 'app/authentication/signup.html', {'form': form})
 
 
@@ -48,7 +60,7 @@ def signin(request):
         try:
             user = UserModel.objects.get(email=email_)
             if check_password(password_, user.password):
-                # request.session['user_id'] = user.id
+                request.session['user_id'] = user.id
                 fn = user.name.split()[0]
                 un = fn.lower() + str(user.id)
                 request.session['username'] = un
@@ -68,3 +80,63 @@ def logout_(request):
     messages.success(request, 'Logged out successfully!')
     return redirect('home')
 
+
+
+# Profile view
+
+# def profile(request):
+#     try:
+#         user = UserModel.objects.get(email=request.user.email)
+#     except UserModel.DoesNotExist:
+#         return redirect('signin') 
+#     return render(request, 'app/profile.html', {'user': user})
+
+
+
+# User verification based on University ID(Depertmentwise)
+
+def verify_user(request):
+    user_id = request.session.get('user_id')
+    if not user_id:
+        messages.error(request, 'Please Login first.')
+        return redirect('signin')
+    
+
+    try:
+        user = UserModel.objects.get(id = user_id)
+    except UserModel.DoesNotExist:
+        messages.error(request, 'User not found. Please Login.')
+        return redirect('signin')
+
+    if request.method == 'POST':
+        form = VerificationForm(request.POST, request.FILES)
+        if form.is_valid():
+            MU_ID = form.cleaned_data['mu_id']
+            MU_ID_check = form.cleaned_data['mu_id'].split('-')[1]
+            # print(f'id check : {MU_ID}')
+            Dept = form.cleaned_data['dept']
+
+            # mu_id from user
+            user_mu_id = user.mu_id.split('-')[1]
+            # print(f'id check from UserModel : {MU_ID}')
+
+            # checking an id is already verified by another user or not
+            if UserModel.objects.filter(mu_id = MU_ID, completed = True).exclude(id=user.id).exists():
+                messages.error(request, 'This University ID is already verified by anothe user. Enter a valid ID.')
+                return redirect('verify_user')
+            
+
+            if MU_ID == user.mu_id and MU_ID_check == user_mu_id and Dept == user.dept:
+                if MU_ID_check == '115' and Dept == 'CSE':
+                    user.completed = True
+                    user.save()
+                    messages.success(request, 'Verification Successful!')
+                    return redirect('itemList')
+                else:
+                    messages.error(request, 'Verification Failed.')
+            else:
+                messages.error(request, 'Invalid Credentials.')
+    else:
+        form = VerificationForm()
+
+    return render(request, 'app/authentication/verification.html', {'form' : form})

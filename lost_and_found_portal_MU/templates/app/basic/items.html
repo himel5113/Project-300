@@ -8,8 +8,12 @@
         <p class="text-center">Here you can find items that have been reported found or lost.</p>
     </div>
 
-    <div class='card'>
-        Lost Item List ______
-    </div>
+    {% if user.completed %}
+            <div class='card'>
+                Items _________________
+            </div>
+        {% else %}
+            <a href="{% url 'verify_user' %}" class="btn btn-primary"> Verify Yourself as a Student of out University.</a>
+    {% endif %}
 
 {% endblock %}

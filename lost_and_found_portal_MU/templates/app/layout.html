@@ -38,6 +38,16 @@
     <!-- Body Content -->
 
     <div class = "container">
+
+        <!--Notifications-->
+
+        {% if messages %}
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        {% endif %}
+
+
         {% block content %}
         {% endblock %}
     </div>
