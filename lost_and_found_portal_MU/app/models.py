@@ -10,9 +10,9 @@ class UserModel(models.Model):
 
     deptChoice=[
         ('CSE', 'CSE'),
-        ('ENG', 'ENG'),
-        ('LAW', 'LAW'),
         ('SWE', 'SWE'),
+        ('ENG', 'ENG'),
+        ('LLB', 'LLB'),
         ('ECO', 'ECO'),
         ('EEE', 'EEE'),
         ('BBA', 'BBA'),
@@ -27,7 +27,7 @@ class UserModel(models.Model):
     dept = models.CharField(choices=deptChoice, default='CSE', max_length=3)
     created_at = models.DateTimeField(auto_now_add=True)
     profileImg = models.ImageField(upload_to='profileImg/', null=True, blank=True)
-    completed = models.BooleanField(default=False)
+    is_valid = models.BooleanField(default=False)
 
     
     def __str__(self):

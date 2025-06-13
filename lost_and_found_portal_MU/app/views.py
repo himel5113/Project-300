@@ -27,7 +27,7 @@ def itemList(request):
         messages.error(request, 'User not found!')
         return redirect('signin')
     
-    items = Items.objects.all().order_by('-created_at')
+    items = Items.objects.all()
     return render(request, 'app/basic/items.html', {'items' : items, 'user' : user})
 
 
@@ -94,7 +94,6 @@ def logout_(request):
 
 
 # User verification based on University ID(Depertmentwise)
-
 def verify_user(request):
     user_id = request.session.get('user_id')
     if not user_id:
@@ -105,38 +104,86 @@ def verify_user(request):
     try:
         user = UserModel.objects.get(id = user_id)
     except UserModel.DoesNotExist:
-        messages.error(request, 'User not found. Please Login.')
+        messages.error(request, 'User not found.')
         return redirect('signin')
+    
 
     if request.method == 'POST':
         form = VerificationForm(request.POST, request.FILES)
         if form.is_valid():
-            MU_ID = form.cleaned_data['mu_id']
-            MU_ID_check = form.cleaned_data['mu_id'].split('-')[1]
-            # print(f'id check : {MU_ID}')
-            Dept = form.cleaned_data['dept']
+            try:
+                # MU ID from user input
+                MU_ID = form.cleaned_data['mu_id']
+                # Depertment from user input
+                Dept = form.cleaned_data['dept']
 
-            # mu_id from user
-            user_mu_id = user.mu_id.split('-')[1]
-            # print(f'id check from UserModel : {MU_ID}')
+                # splitting id to get dept code
+                MU_ID_check = MU_ID.split('-')
 
-            # checking an id is already verified by another user or not
-            if UserModel.objects.filter(mu_id = MU_ID, completed = True).exclude(id=user.id).exists():
-                messages.error(request, 'This University ID is already verified by anothe user. Enter a valid ID.')
-                return redirect('verify_user')
-            
+                # MU dept code
+                idCode = MU_ID_check[1]
 
-            if MU_ID == user.mu_id and MU_ID_check == user_mu_id and Dept == user.dept:
-                if MU_ID_check == '115' and Dept == 'CSE':
-                    user.completed = True
-                    user.save()
-                    messages.success(request, 'Verification Successful!')
-                    return redirect('itemList')
+                if len(MU_ID_check) != 3 or any(len(x) != 3 for x in MU_ID_check):
+                    messages.error(request, 'Invalid ID formate. Use XXX-YYY-ZZZ.')
+                    return render(request, 'app/authentication/verification.html', {'form' : form})
+                
+                
+                try:
+                    user_MuId = user.mu_id
+                    user_dept = user.dept
+                    user_idCode = user_MuId.split('-')[1]
+                except Exception:
+                    messages.error(request, 'Your ID is not updated yet. Please update it on your account or contact to the admin.')
+                    # ***This will be updated after implementing the user profile feature --- return redirect('user_profile)
+                    return redirect('home')
+                
+
+                # checking an id is already verified by another user or not
+                if UserModel.objects.filter(mu_id = MU_ID, is_valid=True).exclude(id = user.id).exists():
+                    messages.error(request, 'This ID already verified by another user. Please enter a valid ID.')
+                    return render(request, 'app/authentication/verification.html', {'form' : form})
+                
+
+                deptDict = {
+                    '115': 'CSE',
+                    '114': 'ENG',
+                    '113': 'LLB',
+                    '116': 'BBA',
+                    '134': 'SWE',
+                    # '': 'ECO',
+                    # '': 'EEE'
+                }
+
+                # # Debug
+                # print(f'input id = {MU_ID}')
+                # print(f'user id = {user.mu_id}')
+                # print(f'input dept = {Dept}')
+                # print(f'user dept = {user.dept}')
+                # print(f'input dept code = {idCode}')
+                # print(f'user dept code = {user_idCode}')
+                # print(f'dept dict value = {deptDict.get(idCode)}')
+                # # end debug
+
+
+                # Checking depertmentwise code for verification
+                if MU_ID == user_MuId and Dept == user.dept and idCode == user_idCode:
+                    if idCode in deptDict and Dept == deptDict[idCode]:
+                        user.is_valid = True
+                        user.save()
+                        messages.success(request, 'Verification Successful!')
+                        return redirect('itemList')
                 else:
-                    messages.error(request, 'Verification Failed.')
-            else:
-                messages.error(request, 'Invalid Credentials.')
+                    messages.error(request, 'Verification Failed. Enter your valid id and department.')
+
+
+            except Exception:
+                messages.error(request, 'Credentials missing.')
+
+        else:
+            messages.error(request, 'Something went wrong. Try again.')
+
     else:
         form = VerificationForm()
+
 
     return render(request, 'app/authentication/verification.html', {'form' : form})
