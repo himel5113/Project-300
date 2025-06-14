@@ -11,11 +11,14 @@ from django.contrib.auth.hashers import make_password, check_password
 
 
 # Create your views here.
+
+
+# homepage view
 def home(request):
     return render(request, 'app/basic/home.html')
 
 
-# Item List
+# Posted Item List
 
 def itemList(request):
     user_id = request.session.get('user_id')
@@ -28,6 +31,7 @@ def itemList(request):
         return redirect('signin')
     
     items = Items.objects.all()
+    
     return render(request, 'app/basic/items.html', {'items' : items, 'user' : user})
 
 
@@ -41,7 +45,13 @@ def signup(request):
             user.password = make_password(form.cleaned_data['password1'])
             if UserModel.objects.filter(email=user.email).exists():
                 messages.error(request, 'Email already exists. Try logging in.')
-                return redirect('app/authentication/signup.html')
+                return redirect('signup')
+            
+            if UserModel.objects.filter(mu_id = user.mu_id).exists():
+                messages.error(request, 'This ID already exists.')
+                return redirect('signup')
+
+
             user.save()
 
             # create and store username
@@ -69,7 +79,7 @@ def signin(request):
             user = UserModel.objects.get(email=email_)
             if check_password(password_, user.password):
                 request.session['user_id'] = user.id
-                
+
                 # fn = user.name.split()[0]
                 # un = fn.lower() + str(user.id)
                 # request.session['username'] = un

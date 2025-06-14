@@ -37,14 +37,13 @@ class UserModel(models.Model):
 
 # Lost Item Model:
 class Items(models.Model):
-    publisherId = models.CharField(max_length=11)
+    publisherId = models.CharField(max_length=11, null=True, blank=True)
     publisherUserName = models.CharField(max_length=50, null=True, blank=True)
-    publisherName = models.CharField(max_length=50)
+    publisherName = models.CharField(max_length=50, null=True, blank=True)
+    image = models.ImageField(upload_to=images, null=True, blank=True)
     title = models.CharField(max_length=100)
     description = models.TextField()
     location = models.CharField(max_length=100)
-    dateTime = models.DateTimeField(default=datetime.now)
-    image = models.ImageField(upload_to=images, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
 
