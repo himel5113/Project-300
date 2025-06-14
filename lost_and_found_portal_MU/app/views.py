@@ -39,10 +39,18 @@ def signup(request):
         if form.is_valid():
             user = form.save(commit=False)
             user.password = make_password(form.cleaned_data['password1'])
-            if User.objects.filter(email=user.email).exists():
+            if UserModel.objects.filter(email=user.email).exists():
                 messages.error(request, 'Email already exists. Try logging in.')
                 return redirect('app/authentication/signup.html')
             user.save()
+
+            # create and store username
+            fn = user.name.split()[0]
+            un = fn + str(user.id)
+            user.username = un
+
+            user.save(update_fields=['username'])
+
             messages.success(request, 'Account created successfully!')
             return redirect('home')
         else:
@@ -61,10 +69,14 @@ def signin(request):
             user = UserModel.objects.get(email=email_)
             if check_password(password_, user.password):
                 request.session['user_id'] = user.id
-                fn = user.name.split()[0]
-                un = fn.lower() + str(user.id)
-                request.session['username'] = un
-                messages.success(request, f"Welcome back, {un}!")
+                
+                # fn = user.name.split()[0]
+                # un = fn.lower() + str(user.id)
+                # request.session['username'] = un
+                # messages.success(request, f"Welcome back, {un}!")
+
+                request.session['username'] = user.username
+                messages.success(request, f"Welcome back, {user.username}!")
                 return redirect('home')
             else :
                 messages.error(request, 'Invalid email or password.')

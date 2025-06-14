@@ -20,6 +20,7 @@ class UserModel(models.Model):
 
 
     name = models.CharField(max_length=50)
+    username = models.CharField(max_length=20, null=False, blank=False)
     email = models.EmailField(max_length=50, unique=True)
     password = models.CharField(max_length=180, null=True, blank=True)
     phone = models.CharField(max_length=15, null=True, blank=True)
@@ -31,9 +32,7 @@ class UserModel(models.Model):
 
     
     def __str__(self):
-        fn = self.name.split()[0]
-        un = fn.lower() + str(self.id)
-        return un
+        return self.username
 
 
 # Lost Item Model:
