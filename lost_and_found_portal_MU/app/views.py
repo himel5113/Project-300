@@ -18,23 +18,6 @@ def home(request):
     return render(request, 'app/basic/home.html')
 
 
-# Posted Item List
-
-def itemList(request):
-    user_id = request.session.get('user_id')
-    if not user_id:
-        messages.error(request, 'Please Login first.')
-    try:
-        user = UserModel.objects.get(id=user_id)
-    except UserModel.DoesNotExist:
-        messages.error(request, 'User not found!')
-        return redirect('signin')
-    
-    items = Items.objects.all()
-    
-    return render(request, 'app/basic/items.html', {'items' : items, 'user' : user})
-
-
 
 # Signup view
 def signup(request):
@@ -209,3 +192,62 @@ def verify_user(request):
 
 
     return render(request, 'app/authentication/verification.html', {'form' : form})
+
+
+
+
+
+
+# Posted Item List
+
+def itemList(request):
+    user_id = request.session.get('user_id')
+    if not user_id:
+        messages.error(request, 'Please Login first.')
+    try:
+        user = UserModel.objects.get(id=user_id)
+    except UserModel.DoesNotExist:
+        messages.error(request, 'User not found!')
+        return redirect('signin')
+    
+    items = Items.objects.all()
+
+    # mu_id from items
+    ids = []
+    for item in items:
+        ids.append(item.publisherId)
+
+    # debug
+    # print(f'ids = {ids}')
+
+    # 
+    publishers = UserModel.objects.filter(mu_id__in = ids)
+    # for p in publishers:
+    #     print(f'PublisherName = {p.name} \n PublisherId = {p.id} \n PublisherUserName = {p.username} \n PublisherDept = {p.dept} \n PublisherEmail = {p.email}')
+    
+
+    publisherDict = {}
+    for p in publishers:
+        publisherDict[p.mu_id] = p
+
+    # debug
+    # for mu_id, username in publisherDict.items():
+    #     print(f'{mu_id} : {username}')
+
+
+    # added publisher info to item
+    for item in items:
+        item.publisherInfo = publisherDict.get(item.publisherId)
+        
+        # debug
+        # if item.publisherInfo:
+        #     print(item.publisherInfo.name)
+        #     print(item.publisherInfo.username)
+        #     print(item.publisherInfo.id)
+        #     print(item.publisherInfo.mu_id)
+        # else :
+        #     print('User not found!')
+
+
+
+    return render(request, 'app/basic/items.html', {'items' : items, 'user' : user})
