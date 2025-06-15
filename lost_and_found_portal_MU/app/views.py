@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from .forms import SignupForm
 from .forms import VerificationForm
-# from .forms import UserForm
+from .forms import ItemForm
 from django.contrib.auth.hashers import make_password, check_password
 
 
@@ -105,7 +105,7 @@ def verify_user(request):
         messages.error(request, 'Please Login first.')
         return redirect('signin')
     
-
+    # to prevent error after clicking the items button
     try:
         user = UserModel.objects.get(id = user_id)
     except UserModel.DoesNotExist:
@@ -204,13 +204,15 @@ def itemList(request):
     user_id = request.session.get('user_id')
     if not user_id:
         messages.error(request, 'Please Login first.')
+
+    # to prevent error after clicking the items button
     try:
         user = UserModel.objects.get(id=user_id)
     except UserModel.DoesNotExist:
         messages.error(request, 'User not found!')
         return redirect('signin')
     
-    items = Items.objects.all()
+    items = Items.objects.all().order_by('-created_at')
 
     # mu_id from items
     ids = []
@@ -238,16 +240,42 @@ def itemList(request):
     # added publisher info to item
     for item in items:
         item.publisherInfo = publisherDict.get(item.publisherId)
-        
+
         # debug
         # if item.publisherInfo:
+        #     print('----------')
         #     print(item.publisherInfo.name)
         #     print(item.publisherInfo.username)
         #     print(item.publisherInfo.id)
+        #     print(item.publisherInfo.dept)
         #     print(item.publisherInfo.mu_id)
         # else :
         #     print('User not found!')
-
+        # print('----------')
 
 
     return render(request, 'app/basic/items.html', {'items' : items, 'user' : user})
+
+
+
+
+
+# Create Post
+
+def create_post(request):
+    user_id = request.session.get('user_id')
+    user = UserModel.objects.get(id = user_id)
+    if request.method == 'POST':
+        form = ItemForm(request.POST, request.FILES)
+        if form.is_valid():
+            item = form.save(commit=False)
+            item.publisherId = user.mu_id
+            item.publisherName = user.name
+            item.publisherUserName = user.username
+
+            item.save()
+            messages.success(request, 'Successfuly Posted!')
+            return redirect('itemList')
+    else:
+        form = ItemForm()
+    return render(request, 'app/basic/create_post.html', {'form' : form})

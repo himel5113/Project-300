@@ -9,26 +9,34 @@
     </div>
 
     {% if user.is_valid %}
-        <a href="" class="btn btn-primary mb-4">Create Post</a>
-            {% for item in items %}
-                <div class="card mb-4" style="width: 18rem;">
+    <a href="{% url 'create_post' %}" class="btn btn-primary mb-4">Create Post</a>
+
+    <div class="row">
+        {% for item in items %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
                     {% if item.image %}
-                        <img src="{{item.image.url}}" class="card-img-top" alt="...">
+                        <img src="{{ item.image.url }}" class="card-img-top" alt="Item image">
                     {% endif %}
-                    <!--need to update-->
-                    username: {{item.publisherInfo.username}} <br>
-                    Name: {{item.publisherInfo.name}} <br>
-                    ID: {{item.publisherInfo.mu_id}} <br>
-                    Lost or Found at: {{item.location}} 
-                        <div class="card-body">
-                            <h5 class="card-title">Title: {{item.title}}</h5>
-                            <p class="card-text">{{item.description}}</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
+                        Username: {{ item.publisherInfo.username }} <br>
+                        Name: {{ item.publisherInfo.name }} <br>
+                        Dept: {{ item.publisherInfo.dept }} <br>
+                        ID: {{ item.publisherInfo.mu_id }} <br>
+                        Location: {{ item.location }}
+                    <div class="card-body">
+                        <h5 class="card-title">Title: {{ item.title }}</h5>
+                        <p class="card-text">{{ item.description }}</p>
+                        <a href="" class="btn btn-primary">Edit Post</a>
+                        <a href="" class="btn btn-danger">Delete Post</a>
+                        <a href="" class="btn btn-warning mt-2">Claim This Item</a>
+                    </div>
                 </div>
-            {% endfor %}
-        {% else %}
-            <a href="{% url 'verify_user' %}" class="btn btn-primary"> Verify Yourself as a Student of out University.</a>
-    {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <a href="{% url 'verify_user' %}" class="btn btn-primary">Verify Yourself as a Student of our University</a>
+{% endif %}
+
 
 {% endblock %}
