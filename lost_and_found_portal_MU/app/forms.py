@@ -26,5 +26,5 @@ class VerificationForm(forms.ModelForm):
 class ItemForm(forms.ModelForm):
     class Meta:
         model = Items
-        fields = ['title', 'location', 'description', 'image']
+        fields = ['type', 'title', 'location', 'description', 'image']
         # fields = ['image', 'title', 'location', 'description']

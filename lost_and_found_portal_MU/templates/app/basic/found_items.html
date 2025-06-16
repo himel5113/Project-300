@@ -1,0 +1,35 @@
+{% extends "app/layout.html" %}
+
+
+{% block content %}
+
+<a href="{% url 'create_post' %}" class="btn btn-primary mt-5 mb-5">Create Post</a>
+
+<div class="row">
+        {% for item in items %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    {% if item.image %}
+                        <img src="{{ item.image.url }}" class="card-img-top" alt="Item image">
+                    {% endif %}
+                        Username: {{ item.publisherInfo.username }} <br>
+                        Name: {{ item.publisherInfo.name }} <br>
+                        Dept: {{ item.publisherInfo.dept }} <br>
+                        ID: {{ item.publisherInfo.mu_id }} <br>
+                        Location: {{ item.location }}
+                    <div class="card-body">
+                        <h5 class="card-title">Title: {{ item.title }}</h5>
+                        <p class="card-text">{{ item.description }}</p>
+                        {% if item.publisherInfo.username == user.username %}
+                            <a href="" class="btn btn-primary">Edit Post</a>
+                            <a href="" class="btn btn-danger">Delete Post</a>
+                        {% endif %}
+                        <!--<a href="" class="btn btn-warning mt-2">Claim This Item</a>-->
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+
+{% endblock %}

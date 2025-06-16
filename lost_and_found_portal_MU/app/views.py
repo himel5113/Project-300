@@ -211,37 +211,94 @@ def itemList(request):
     except UserModel.DoesNotExist:
         messages.error(request, 'User not found!')
         return redirect('signin')
-    
-    items = Items.objects.all().order_by('-created_at')
 
-    # mu_id from items
+    return render(request, 'app/basic/items.html', {'user' : user})
+
+
+
+
+
+# found item
+def found_items_view(request):
+
+    items = Items.objects.filter(type='Found').order_by('-created_at')
     ids = []
     for item in items:
         ids.append(item.publisherId)
 
-    # debug
-    # print(f'ids = {ids}')
+    # Debug
+    # print('ID: ')
+    # for i in ids:
+    #     print(i)
 
-    # 
+
     publishers = UserModel.objects.filter(mu_id__in = ids)
     # for p in publishers:
     #     print(f'PublisherName = {p.name} \n PublisherId = {p.id} \n PublisherUserName = {p.username} \n PublisherDept = {p.dept} \n PublisherEmail = {p.email}')
-    
+
 
     publisherDict = {}
     for p in publishers:
         publisherDict[p.mu_id] = p
-
-    # debug
-    # for mu_id, username in publisherDict.items():
-    #     print(f'{mu_id} : {username}')
 
 
     # added publisher info to item
     for item in items:
         item.publisherInfo = publisherDict.get(item.publisherId)
 
-        # debug
+
+        #   # debug
+        # if item.publisherInfo:
+        #     print('----------')
+        #     print(item.publisherInfo.name)
+        #     print(item.publisherInfo.username)
+        #     print(item.publisherInfo.id)
+        #     print(item.publisherInfo.dept)
+        #     print(item.publisherInfo.mu_id)
+        # else :
+        #     print('User not found!')
+        # print('----------')
+
+        loggedin_user_id = request.session.get('user_id')
+        user = UserModel.objects.get(id = loggedin_user_id)
+
+
+    return render(request, 'app/basic/found_items.html', {'items' : items, 'user' : user})
+
+
+
+
+
+# lost item
+def lost_items_view(request):
+
+    items = Items.objects.filter(type='Lost').order_by('-created_at')
+    ids = []
+    for item in items:
+        ids.append(item.publisherId)
+
+    # Debug
+    # print('ID: ')
+    # for i in ids:
+    #     print(i)
+
+
+    publishers = UserModel.objects.filter(mu_id__in = ids)
+    # for p in publishers:
+    #     print(f'PublisherName = {p.name} \n PublisherId = {p.id} \n PublisherUserName = {p.username} \n PublisherDept = {p.dept} \n PublisherEmail = {p.email}')
+
+
+    publisherDict = {}
+    for p in publishers:
+        publisherDict[p.mu_id] = p
+
+
+    # added publisher info to item
+    for item in items:
+        item.publisherInfo = publisherDict.get(item.publisherId)
+
+
+        #   # debug
         # if item.publisherInfo:
         #     print('----------')
         #     print(item.publisherInfo.name)
@@ -254,7 +311,11 @@ def itemList(request):
         # print('----------')
 
 
-    return render(request, 'app/basic/items.html', {'items' : items, 'user' : user})
+        loggedin_user_id = request.session.get('user_id')
+        user = UserModel.objects.get(id = loggedin_user_id)
+
+
+    return render(request, 'app/basic/lost_items.html', {'items' : items, 'user':user})
 
 
 

@@ -9,6 +9,7 @@ def images(instance, filename):
 class UserModel(models.Model):
 
     deptChoice=[
+        ('N/A', 'N/A'),
         ('CSE', 'CSE'),
         ('SWE', 'SWE'),
         ('ENG', 'ENG'),
@@ -25,7 +26,7 @@ class UserModel(models.Model):
     password = models.CharField(max_length=180, null=True, blank=True)
     phone = models.CharField(max_length=15, null=True, blank=True)
     mu_id = models.CharField(max_length=11, null=True, blank=True)
-    dept = models.CharField(choices=deptChoice, default='CSE', max_length=3)
+    dept = models.CharField(choices=deptChoice, default='N/A', max_length=3)
     created_at = models.DateTimeField(auto_now_add=True)
     profileImg = models.ImageField(upload_to='profileImg/', null=True, blank=True)
     is_valid = models.BooleanField(default=False)
@@ -37,9 +38,18 @@ class UserModel(models.Model):
 
 # Lost Item Model:
 class Items(models.Model):
+
+    itemsType = [
+        ('N/A', 'N/A'),
+        ('Found', 'Found'),
+        ('Lost', 'Lost'),
+    ]
+
+
     publisherId = models.CharField(max_length=11, null=True, blank=True)
     publisherUserName = models.CharField(max_length=50, null=True, blank=True)
     publisherName = models.CharField(max_length=50, null=True, blank=True)
+    type = models.CharField(choices=itemsType, default='N/A')
     image = models.ImageField(upload_to=images, null=True, blank=True)
     title = models.CharField(max_length=100)
     description = models.TextField()

@@ -4,39 +4,27 @@
 {% block content %}
 
     <div>
-        <h1 class="text-center my-4">Found Items here</h1>
+        <h1 class="text-center my-4">Find your Items here</h1>
         <p class="text-center">Here you can find items that have been reported found or lost.</p>
     </div>
 
     {% if user.is_valid %}
-    <a href="{% url 'create_post' %}" class="btn btn-primary mb-4">Create Post</a>
 
-    <div class="row">
-        {% for item in items %}
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    {% if item.image %}
-                        <img src="{{ item.image.url }}" class="card-img-top" alt="Item image">
-                    {% endif %}
-                        Username: {{ item.publisherInfo.username }} <br>
-                        Name: {{ item.publisherInfo.name }} <br>
-                        Dept: {{ item.publisherInfo.dept }} <br>
-                        ID: {{ item.publisherInfo.mu_id }} <br>
-                        Location: {{ item.location }}
-                    <div class="card-body">
-                        <h5 class="card-title">Title: {{ item.title }}</h5>
-                        <p class="card-text">{{ item.description }}</p>
-                        <a href="" class="btn btn-primary">Edit Post</a>
-                        <a href="" class="btn btn-danger">Delete Post</a>
-                        <a href="" class="btn btn-warning mt-2">Claim This Item</a>
-                    </div>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-{% else %}
-    <a href="{% url 'verify_user' %}" class="btn btn-primary">Verify Yourself as a Student of our University</a>
-{% endif %}
+        <!--<a href="{% url 'create_post' %}" class="btn btn-primary mb-4">Create Post</a>-->
+
+        <div class="container d-flex flex-column justify-content-center gap-3 my-4 mt-5">
+
+            <a href="{% url 'found_items_view' %}" class="btn btn-primary">Found Items</a> <br>
+            <a href="{% url 'lost_items_view' %}" class="btn btn-primary">Lost Items</a>
+
+            
+        </div>
+
+
+
+    {% else %}
+        <a href="{% url 'verify_user' %}" class="btn btn-primary">Verify Yourself as a Student of our University</a>
+    {% endif %}
 
 
 {% endblock %}
