@@ -335,7 +335,10 @@ def create_post(request):
 
             item.save()
             messages.success(request, 'Successfuly Posted!')
-            return redirect('itemList')
+            if item.type == 'Found':
+                return redirect('found_items_view')
+            else:
+                return redirect('lost_items_view')
     else:
         form = ItemForm()
     return render(request, 'app/basic/create_post.html', {'form' : form})
