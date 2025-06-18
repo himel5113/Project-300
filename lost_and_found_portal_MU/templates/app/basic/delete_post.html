@@ -1,0 +1,11 @@
+{% extends "app/layout.html" %}
+
+
+{% block content %}
+
+<form method = 'POST'>
+    {% csrf_token %}
+    <button class="btn btn-danger">Delete</button>
+</form>
+
+{% endblock %}

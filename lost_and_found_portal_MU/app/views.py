@@ -370,3 +370,16 @@ def edit_post_view(request, item_id):
     else:
         form = ItemForm(instance=item)
     return render(request, 'app/basic/edit_post.html', {'form' : form, 'item' : item})
+
+
+
+# Delete post 
+def delete_post_view(request, item_id):
+    item = get_object_or_404(Items, id = item_id)
+    if request.method == 'POST':
+        item.delete()
+        if item.type == 'Found':
+            return redirect('found_items_view')
+        else:
+            return redirect('lost_items_view')
+    return render(request, 'app/basic/delete_post.html', {'item' : item})
