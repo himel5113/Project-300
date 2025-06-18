@@ -22,18 +22,21 @@ def home(request):
 # Signup view
 def signup(request):
     if request.method == 'POST':
+
+        if UserModel.objects.filter(email=request.POST.get('email')).exists():
+                messages.error(request, 'Email already exists. Try logging in.')
+                return redirect('signup')
+            
+        if UserModel.objects.filter(mu_id = request.POST.get('mu_id')).exists():
+            messages.error(request, 'This ID already exists.')
+            return redirect('signup')
+        
+
         form = SignupForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save(commit=False)
             user.password = make_password(form.cleaned_data['password1'])
-            if UserModel.objects.filter(email=user.email).exists():
-                messages.error(request, 'Email already exists. Try logging in.')
-                return redirect('signup')
             
-            if UserModel.objects.filter(mu_id = user.mu_id).exists():
-                messages.error(request, 'This ID already exists.')
-                return redirect('signup')
-
 
             user.save()
 
@@ -69,7 +72,7 @@ def signin(request):
                 # messages.success(request, f"Welcome back, {un}!")
 
                 request.session['username'] = user.username
-                messages.success(request, f"Welcome back, {user.username}!")
+                messages.success(request, f"Welcome, {user.username}!")
                 return redirect('home')
             else :
                 messages.error(request, 'Invalid email or password.')
@@ -89,12 +92,8 @@ def logout_(request):
 
 # Profile view
 
-# def profile(request):
-#     try:
-#         user = UserModel.objects.get(email=request.user.email)
-#     except UserModel.DoesNotExist:
-#         return redirect('signin') 
-#     return render(request, 'app/profile.html', {'user': user})
+def profile_view(request):
+    return render(request, 'app/user/profile.html')
 
 
 
@@ -200,7 +199,7 @@ def verify_user(request):
 
 # Posted Item List
 
-def itemList(request):
+def itemPage(request):
     user_id = request.session.get('user_id')
     if not user_id:
         messages.error(request, 'Please Login first.')
@@ -340,3 +339,31 @@ def create_post(request):
     else:
         form = ItemForm()
     return render(request, 'app/basic/create_post.html', {'form' : form})
+
+
+
+# Edit Post
+
+def edit_post_view(request, item_id):
+    user = get_object_or_404(UserModel, id = request.session.get('user_id'))
+    item = get_object_or_404(Items, id = item_id)
+
+
+    if item.publisherId != user.mu_id:
+        messages.error(request, 'You are not authorized to edit this post.')
+        return redirect('itemPage')
+    
+    if request.method == 'POST':
+        form = ItemForm(request.POST, request.FILES, instance=item)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Post updated successfully!')
+            if item.type == 'Found':
+                return redirect('found_items_view')
+            else:
+                return redirect('lost_items_view')
+        else:
+            messages.error(request, 'Something went wrong. Try again later.')
+    else:
+        form = ItemForm(instance=item)
+    return render(request, 'app/basic/edit_post.html', {'form' : form, 'item' : item})
