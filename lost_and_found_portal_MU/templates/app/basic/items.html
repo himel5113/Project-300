@@ -3,12 +3,35 @@
 
 {% block content %}
 
+
     <div>
         <h1 class="text-center my-4">Find your Items here</h1>
         <p class="text-center">Here you can find items that have been reported found or lost.</p>
     </div>
 
     {% if user.is_valid %}
+        <h3>Quick Search</h3>
+
+        <h3>Founded Items List:</h3>
+<select class="form-select mb-3" onchange="if(this.value) window.location.href=this.value;">
+    <option value="">Select a found item...</option>
+    {% for item in found_items %}
+        <option value="{% url 'found_items_view' %}?item_id={{ item.id }}">{{ item.title }}</option>
+    {% empty %}
+        <option disabled>No found items reported yet.</option>
+    {% endfor %}
+</select>
+
+<h3>Lost Items List:</h3>
+<select class="form-select mb-3" onchange="if(this.value) window.location.href=this.value;">
+    <option value="">Select a lost item...</option>
+    {% for item in lost_items %}
+        <option value="{% url 'lost_items_view' %}?item_id={{ item.id }}">{{ item.title }}</option>
+    {% empty %}
+        <option disabled>No lost items reported yet.</option>
+    {% endfor %}
+</select>
+
 
         <!--<a href="{% url 'create_post' %}" class="btn btn-primary mb-4">Create Post</a>-->
 

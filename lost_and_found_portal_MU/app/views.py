@@ -210,8 +210,12 @@ def itemPage(request):
     except UserModel.DoesNotExist:
         messages.error(request, 'User not found!')
         return redirect('signin')
+    
+    found_items = Items.objects.filter(type='Found').order_by('-created_at')
 
-    return render(request, 'app/basic/items.html', {'user' : user})
+    lost_items = Items.objects.filter(type='Lost').order_by('-created_at')
+
+    return render(request, 'app/basic/items.html', {'user' : user, 'found_items': found_items, 'lost_items': lost_items})
 
 
 
