@@ -175,7 +175,7 @@ def verify_user(request):
                         user.is_valid = True
                         user.save()
                         messages.success(request, 'Verification Successful!')
-                        return redirect('itemList')
+                        return redirect('itemPage')
                 else:
                     messages.error(request, 'Verification Failed. Enter your valid id and department.')
 
@@ -210,6 +210,7 @@ def itemPage(request):
     except UserModel.DoesNotExist:
         messages.error(request, 'User not found!')
         return redirect('signin')
+    
     
     found_items = Items.objects.filter(type='Found').order_by('-created_at')
 
