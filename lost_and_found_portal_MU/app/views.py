@@ -233,6 +233,15 @@ def itemPage(request):
 # found item
 def found_items_view(request):
 
+    user = None
+
+    try:
+        loggedin_user_id = request.session.get('user_id')
+        if loggedin_user_id:
+            user = UserModel.objects.get(id = loggedin_user_id)
+    except UserModel.DoesNotExist:
+        user = None
+
     items = Items.objects.filter(type='Found').order_by('-created_at')
     ids = []
     for item in items:
@@ -271,8 +280,8 @@ def found_items_view(request):
         #     print('User not found!')
         # print('----------')
 
-        loggedin_user_id = request.session.get('user_id')
-        user = UserModel.objects.get(id = loggedin_user_id)
+        # loggedin_user_id = request.session.get('user_id')
+        # user = UserModel.objects.get(id = loggedin_user_id)
 
 
     return render(request, 'app/basic/found_items.html', {'items' : items, 'user' : user})
@@ -283,6 +292,15 @@ def found_items_view(request):
 
 # lost item
 def lost_items_view(request):
+
+    user = None
+
+    try:
+        loggedin_user_id = request.session.get('user_id')
+        if loggedin_user_id:
+            user = UserModel.objects.get(id = loggedin_user_id)
+    except UserModel.DoesNotExist:
+        user = None
 
     items = Items.objects.filter(type='Lost').order_by('-created_at')
     ids = []
@@ -322,9 +340,6 @@ def lost_items_view(request):
         #     print('User not found!')
         # print('----------')
 
-
-        loggedin_user_id = request.session.get('user_id')
-        user = UserModel.objects.get(id = loggedin_user_id)
 
 
     return render(request, 'app/basic/lost_items.html', {'items' : items, 'user':user})
