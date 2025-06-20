@@ -14,5 +14,6 @@ urlpatterns = [
     path('found-item/', views.found_items_view, name = 'found_items_view'),
     path('lost-item/', views.lost_items_view, name = 'lost_items_view'),
     path('edit-post/<int:item_id>', views.edit_post_view, name = 'edit_post_view'),
-    path('delete-post/<int:item_id>', views.delete_post_view, name = 'delete_post_view'),
+    path('delete-post/<int:item_id>', views.delete_and_backup_post, name = 'delete_and_backup_post'),
+    # path('backup/<int:item_id>', views.backup_items, name = 'backup_items'),
 ]    

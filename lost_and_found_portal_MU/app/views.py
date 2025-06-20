@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Items, UserModel
+from .models import Items, UserModel, Backup
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
@@ -91,7 +91,7 @@ def logout_(request):
 
 
 # Profile view
-
+# Development Phase
 def profile_view(request):
     return render(request, 'app/user/profile.html')
 
@@ -124,12 +124,17 @@ def verify_user(request):
                 # splitting id to get dept code
                 MU_ID_check = MU_ID.split('-')
 
-                # MU dept code
-                idCode = MU_ID_check[1]
 
+                # checking id format
+                # MU_ID should be in the format of XXX-YYY-ZZZ
                 if len(MU_ID_check) != 3 or any(len(x) != 3 for x in MU_ID_check):
                     messages.error(request, 'Invalid ID formate. Use XXX-YYY-ZZZ.')
                     return render(request, 'app/authentication/verification.html', {'form' : form})
+
+                # MU dept code
+                idCode = MU_ID_check[1]
+
+                
                 
                 
                 try:
@@ -180,7 +185,10 @@ def verify_user(request):
                     messages.error(request, 'Verification Failed. Enter your valid id and department.')
 
 
-            except Exception:
+            except Exception as e:
+                # Debug
+                # print(f'DEBUG ERROR: {e}')
+                # end debug
                 messages.error(request, 'Credentials missing.')
 
         else:
@@ -378,13 +386,34 @@ def edit_post_view(request, item_id):
 
 
 
-# Delete post 
-def delete_post_view(request, item_id):
+# Delete and Backup post
+def delete_and_backup_post(request, item_id):
     item = get_object_or_404(Items, id = item_id)
     if request.method == 'POST':
+
+        # Abstruct (only for admin)
+        backup = Backup.objects.create(
+            original_item_id=item.id,
+            original_publisherId=item.publisherId,
+            original_publisherUserName=item.publisherUserName,
+            original_publisherName=item.publisherName,
+            original_itemType=item.type,
+            original_image=item.image,
+            original_title=item.title,
+            original_description=item.description,
+            original_location=item.location,
+        )
+        backup.save()
+
+
+        temp = item.type
+
         item.delete()
-        if item.type == 'Found':
+        messages.success(request, 'Post deleted and backed up successfully!')
+        if temp == 'Found':
             return redirect('found_items_view')
         else:
             return redirect('lost_items_view')
     return render(request, 'app/basic/delete_post.html', {'item' : item})
+
+

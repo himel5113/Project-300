@@ -59,4 +59,25 @@ class Items(models.Model):
 
     def __str__(self):
         return self.title
+    
+
+
+# Backup Deleted Items Model:
+class Backup(models.Model):
+    itemsType = [
+        ('N/A', 'N/A'),
+        ('Found', 'Found'),
+        ('Lost', 'Lost'),
+    ]
+
+    original_item_id = models.IntegerField(null = True, blank = True)
+    original_publisherId = models.CharField(max_length=11, null=True, blank=True)
+    original_publisherUserName = models.CharField(max_length=50, null=True, blank=True)
+    original_publisherName = models.CharField(max_length=50, null=True, blank=True)
+    original_itemType = models.CharField(choices=itemsType, default='N/A')
+    original_image = models.ImageField(upload_to=images, null=True, blank=True)
+    original_title = models.CharField(max_length=100)
+    original_description = models.TextField()
+    original_location = models.CharField(max_length=100)
+    deleted_at = models.DateTimeField(auto_now_add=True)
 

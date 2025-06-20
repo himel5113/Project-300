@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<a href="{% url 'create_post' %}" class="btn btn-primary mt-5 mb-5">Create Post</a>
+    <a href="{% url 'create_post' %}" class="btn btn-primary mt-5 mb-5">Create Post</a> 
 
 <div class="row">
         {% for item in items %}
@@ -22,9 +22,10 @@
                         <p class="card-text">{{ item.description }}</p>
                         {% if item.publisherInfo.username == user.username %}
                             <a href="{% url 'edit_post_view' item.id %}" class="btn btn-primary">Edit Post</a>
-                            <a href="{% url 'delete_post_view' item.id %}" class="btn btn-danger">Delete Post</a>
-                        {% endif %}  
-                        <a href="" class="btn btn-warning mt-2">Send Claim request</a>
+                            <a href="{% url 'delete_and_backup_post' item.id %}" class="btn btn-danger">Delete Post</a>
+                        {% else %}  
+                            <a href="" class="btn btn-warning mt-2">Send Claim request</a>
+                        {% endif %} 
                     </div>
                 </div>
             </div>
