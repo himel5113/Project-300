@@ -17,10 +17,10 @@ class SignupForm(forms.ModelForm):
 #         fields = ['name', 'email', 'dept', 'MU_id', 'phone', 'profileImg']
 
 
-class VerificationForm(forms.ModelForm):
-    class Meta:
-        model = UserModel
-        fields = ['mu_id', 'dept']
+# class VerificationForm(forms.ModelForm):
+#     class Meta:
+#         model = UserModel
+#         fields = ['mu_id', 'dept']
 
 
 class ItemForm(forms.ModelForm):
