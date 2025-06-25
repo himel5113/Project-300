@@ -36,32 +36,36 @@ def signup(request):
         if form.is_valid():
             user = form.save(commit=False)
             user.password = make_password(form.cleaned_data['password1'])
-            muID = form.cleaned_data['mu_id'].split('-')
-            dept = form.cleaned_data['dept']
+            try:
+                muID = form.cleaned_data['mu_id'].split('-')
+                dept = form.cleaned_data['dept']
 
             # DEBUG
-            # print(f'DEBUG: MU_ID = {MU_ID}')
+                # print(f'DEBUG: MU_ID = {MU_ID}')
 
             # checking id format
             # MU_ID should be in the format of XXX-YYY-ZZZ
-            if len(muID) != 3 or any(len(x) != 3 for x in muID):
-                messages.error(request, 'Invalid ID format. Use XXX-YYY-ZZZ.')
-                return render(request, 'app/authentication/signup.html', {'form' : form})
+                if len(muID) != 3 or any(len(x) != 3 for x in muID):
+                    messages.error(request, 'Invalid ID format. Use XXX-YYY-ZZZ.')
+                    return render(request, 'app/authentication/signup.html', {'form' : form})
 
-            temp = muID[1]
-            idCode = ['115', '114', '113', '116', '134', '111', '141']
-            checkDict = {
-                '115': 'CSE',
-                '114': 'ENG',
-                '113': 'LLB',
-                '116': 'BBA',
-                '134': 'SWE',
-                '111': 'ECO',
-                '141': 'EEE'
-            }
+                temp = muID[1]
+                idCode = ['115', '114', '113', '116', '134', '111', '141']
+                checkDict = {
+                    '115': 'CSE',
+                    '114': 'ENG',
+                    '113': 'LLB',
+                    '116': 'BBA',
+                    '134': 'SWE',
+                    '111': 'ECO',
+                    '141': 'EEE'
+                }
 
-            if temp not in idCode or dept != checkDict[temp]:
-                messages.error(request, 'Invalid ID. Enter a valid ID and Department.')
+                if temp not in idCode or dept != checkDict[temp]:
+                        messages.error(request, 'Invalid ID. Enter a valid ID and Department.')
+                        return render(request, 'app/authentication/signup.html', {'form' : form})
+            except Exception as e:
+                messages.error(request, 'Credentials missing.')
                 return render(request, 'app/authentication/signup.html', {'form' : form})
 
             user.save()

@@ -29,7 +29,7 @@ class UserModel(models.Model):
     dept = models.CharField(choices=deptChoice, default='N/A', max_length=3)
     created_at = models.DateTimeField(auto_now_add=True)
     profileImg = models.ImageField(upload_to='profileImg/', null=True, blank=True)
-    is_valid = models.BooleanField(default=False)
+    # is_valid = models.BooleanField(default=False)   
 
     
     def __str__(self):
