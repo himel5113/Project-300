@@ -1,36 +1,39 @@
 {% extends "app/layout.html" %}
 
-
 {% block content %}
-
-    <a href="{% url 'create_post' %}" class="btn btn-primary mt-5 mb-5">Create Post</a> 
+<a href="{% url 'create_post' %}" class="btn btn-primary mt-5 mb-5">Create Post</a>
 
 <div class="row">
-        {% for item in items %}
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    {% if item.image %}
-                        <img src="{{ item.image.url }}" class="card-img-top" alt="Item image">
+    {% for item in items %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if item.image %}
+                    <img src="{{ item.image.url }}" class="card-img-top" alt="Item image">
+                {% endif %}
+                <div class="card-body">
+                    <p>
+                        <strong>Username:</strong> {{ item.publisherInfo.username }}<br>
+                        <strong>Name:</strong> {{ item.publisherInfo.name }}<br>
+                        <strong>Dept:</strong> {{ item.publisherInfo.dept }}<br>
+                        <strong>ID:</strong> {{ item.publisherInfo.mu_id }}<br>
+                        <strong>Location:</strong> {{ item.location }}
+                    </p>
+                    <h5 class="card-title">Title: {{ item.title }}</h5>
+                    <p>
+                        {{ item.description|truncatechars:100 }}
+                        {% if item.description|length > 100 %}
+                            <a href="{% url 'details_post_view' item.id %}">&nbsp;read more</a>
+                        {% endif %}
+                    </p>
+                    {% if item.publisherInfo.username == user.username %}
+                        <a href="{% url 'edit_post_view' item.id %}" class="btn btn-primary">Edit Post</a>
+                        <a href="{% url 'delete_and_backup_post' item.id %}" class="btn btn-danger">Delete Post</a>
+                    {% else %}
+                        <a href="#" class="btn btn-warning mt-2">Send Claim request</a>
                     {% endif %}
-                        Username: {{ item.publisherInfo.username }} <br>
-                        Name: {{ item.publisherInfo.name }} <br>
-                        Dept: {{ item.publisherInfo.dept }} <br>
-                        ID: {{ item.publisherInfo.mu_id }} <br>
-                        Location: {{ item.location }}
-                    <div class="card-body">
-                        <h5 class="card-title">Title: {{ item.title }}</h5>
-                        <p class="card-text">{{ item.description }}</p>
-                        {% if item.publisherInfo.username == user.username %}
-                            <a href="{% url 'edit_post_view' item.id %}" class="btn btn-primary">Edit Post</a>
-                            <a href="{% url 'delete_and_backup_post' item.id %}" class="btn btn-danger">Delete Post</a>
-                        {% else %}  
-                            <a href="" class="btn btn-warning mt-2">Send Claim request</a>
-                        {% endif %} 
-                    </div>
                 </div>
             </div>
-        {% endfor %}
-    </div>
-
-
+        </div>
+    {% endfor %}
+</div>
 {% endblock %}

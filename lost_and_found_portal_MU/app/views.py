@@ -1,12 +1,20 @@
 from django.shortcuts import render, redirect, get_object_or_404
+
+# Models
 from .models import Items, UserModel, Backup
+
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+
+# Forms
 from .forms import SignupForm
 # from .forms import VerificationForm
 from .forms import ItemForm
+
+
 from django.contrib.auth.hashers import make_password, check_password
 
 
@@ -114,7 +122,7 @@ def signin(request):
 
 # Logout view
 def logout_(request):
-    logout(request)
+    request.session.flush() # Clear the session data
     messages.success(request, 'Logged out successfully!')
     return redirect('home')
 
@@ -127,7 +135,7 @@ def profile_view(request):
 
 
 
-# # User verification based on University ID(Depertmentwise)---implemented in signup
+# # User verification based on University ID(Depertmentwise)---implemented in signup process
 # def verify_user(request):
 #     user_id = request.session.get('user_id')
 #     if not user_id:
@@ -460,5 +468,14 @@ def delete_and_backup_post(request, item_id):
         else:
             return redirect('lost_items_view')
     return render(request, 'app/basic/delete_post.html', {'item' : item})
+
+
+
+
+# Details post view
+def details_post_view(request, item_id):
+    item = get_object_or_404(Items, id=item_id)
+    user = UserModel.objects.get(mu_id=item.publisherId)
+    return render(request, 'app/basic/details.html', {'item': item, 'user': user})
 
 
