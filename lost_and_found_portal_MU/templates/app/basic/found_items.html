@@ -8,7 +8,9 @@
         <div class="col-md-4 mb-4">
             <div class="card h-100">
                 {% if item.image %}
-                    <img src="{{ item.image.url }}" class="card-img-top" alt="Item image">
+                    <a href="{% url 'details_post_view' item.id %}">
+                        <img src="{{ item.image.url }}" class="card-img-top" alt="Item image">
+                    </a>
                 {% endif %}
                 <div class="card-body">
                     <p>
@@ -29,7 +31,7 @@
                         <a href="{% url 'edit_post_view' item.id %}" class="btn btn-primary">Edit Post</a>
                         <a href="{% url 'delete_and_backup_post' item.id %}" class="btn btn-danger">Delete Post</a>
                     {% else %}
-                        <a href="#" class="btn btn-warning mt-2">Send Claim request</a>
+                        <a href="{% url 'claim_request' item.id %}" class="btn btn-warning mt-2">Send Claim request</a>
                     {% endif %}
                 </div>
             </div>

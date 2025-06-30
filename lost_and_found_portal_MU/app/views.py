@@ -18,6 +18,10 @@ from .forms import ItemForm
 from django.contrib.auth.hashers import make_password, check_password
 
 
+from django.core.mail import send_mail
+from django.conf import settings
+
+
 # Create your views here.
 
 
@@ -479,3 +483,46 @@ def details_post_view(request, item_id):
     return render(request, 'app/basic/details.html', {'item': item, 'user': user})
 
 
+
+
+# send claim request
+
+def claim_request(request, item_id):
+    item = get_object_or_404(Items, id=item_id)
+    claimer = get_object_or_404(UserModel, id=request.session.get('user_id'))
+    publisher = get_object_or_404(UserModel, mu_id=item.publisherId)
+
+    subject = f"Claim Request for Item: {item.title}"
+    message = f"""
+    Dear {publisher.name},
+
+    {claimer.name} (email: {claimer.email}) has requested to claim the item you posted.
+
+    Item Details:
+    Item Title: {item.title}
+    Location: {item.location}
+    Description: {item.description}
+
+    Please contact the claimer directly.
+
+    Here's the claimer details:
+    Name: {claimer.name}
+    Email: {claimer.email}
+    Department: {claimer.dept}
+    University ID: {claimer.mu_id}
+    Phone: {claimer.phone}
+
+    With best regards,
+    Lost & Found Team
+    """
+
+    send_mail(
+        subject,
+        message,
+        settings.DEFAULT_FROM_EMAIL,
+        [publisher.email],
+        fail_silently=False
+    )
+
+    messages.success(request, 'Claim request sent successfully!')
+    return redirect('itemPage')
