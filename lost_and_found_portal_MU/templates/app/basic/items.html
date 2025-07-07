@@ -1,56 +1,158 @@
 {% extends "app/layout.html" %}
 
-
 {% block content %}
+<style>
+    body {
+        background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%);
+        color: #e2e8f0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
 
+    /* Centered heading and intro text */
+    .intro-section {
+        text-align: center;
+        margin-top: 3rem;
+        padding-bottom: 2rem;
+    }
 
-    <div>
-        <h1 class="text-center my-4">Find your Items here</h1>
-        <p class="text-center">Here you can find items that have been reported found or lost.</p>
-    </div>
+    .intro-section h1 {
+        font-size: 2.5rem;
+        color: #e0e7ff;
+        margin-bottom: 0.5rem;
+    }
 
-    {% comment %} {% if user.is_valid %} {% endcomment %}
-        <h3>Quick Search</h3>
+    .intro-section p {
+        color: #d1d5db;
+        font-size: 1.125rem;
+    }
 
-        <h3>Founded Items List:</h3>
-<select class="form-select mb-3" onchange="if(this.value) window.location.href=this.value;">
-    <option value="">Select a found item...</option>
-    {% for item in found_items %}
+    /* Search and dropdown styling */
+    .search-section {
+        background: linear-gradient(145deg, #3b2c96, #261f66);
+        /* Subtle gradient */
+        padding: 2rem 1.5rem;
+        border-radius: 1.25rem;
+        box-shadow: 0 10px 30px rgba(67, 48, 170, 0.3);
+        margin: 3rem auto;
+        width: 80%;
+        max-width: 800px;
+    }
+
+    .search-section h3 {
+        color: #e0e7ff;
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .search-section select {
+        width: 100%;
+        padding: 0.875rem;
+        border-radius: 0.75rem;
+        border: 1px solid rgba(196, 181, 253, 0.3);
+        background: #1e1b4b;
+        color: #e2e8f0;
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .search-section select:hover {
+        border-color: #7f51fc;
+        box-shadow: 0 0 8px rgba(124, 58, 237, 0.4);
+    }
+
+    .search-section select:focus {
+        outline: none;
+        border-color: #7f51fc;
+        box-shadow: 0 0 8px rgba(124, 58, 237, 0.4);
+    }
+
+    /* Buttons Container */
+    .buttons-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        align-items: center;
+        margin-top: 2rem;
+    }
+
+    .buttons-container a {
+        background: linear-gradient(135deg, #7f51fc, #6e21f4);
+        padding: 0.75rem 1.5rem;
+        border-radius: 1rem;
+        text-align: center;
+        font-size: 1rem;
+        color: #fff;
+        font-weight: 600;
+        text-decoration: none;
+        width: 60%;
+        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+    .buttons-container a:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
+        background: linear-gradient(135deg, #5f3aeb, #4c1fd6);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .search-section {
+            width: 90%;
+        }
+
+        .buttons-container a {
+            width: 80%;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .buttons-container a {
+            width: 100%;
+        }
+    }
+</style>
+
+<!-- Intro Section -->
+<div class="intro-section">
+    <h1>Find Your Items Here</h1>
+    <p>Here you can find items that have been reported as found or lost.</p>
+</div>
+
+<!-- Search Section -->
+<div class="search-section">
+    <h3>Quick Search</h3>
+
+    <h3>Found Items List:</h3>
+    <select onchange="if(this.value) window.location.href=this.value;">
+        <option value="">Select a found item...</option>
+        {% for item in found_items %}
         <option value="{% url 'found_items_view' %}?item_id={{ item.id }}">{{ item.title }}</option>
-    {% empty %}
+        {% empty %}
         <option disabled>No found items reported yet.</option>
-    {% endfor %}
-</select>
+        {% endfor %}
+    </select>
 
-<h3>Lost Items List:</h3>
-<select class="form-select mb-3" onchange="if(this.value) window.location.href=this.value;">
-    <option value="">Select a lost item...</option>
-    {% for item in lost_items %}
+    <h3>Lost Items List:</h3>
+    <select onchange="if(this.value) window.location.href=this.value;">
+        <option value="">Select a lost item...</option>
+        {% for item in lost_items %}
         <option value="{% url 'lost_items_view' %}?item_id={{ item.id }}">{{ item.title }}</option>
-    {% empty %}
+        {% empty %}
         <option disabled>No lost items reported yet.</option>
-    {% endfor %}
-</select>
+        {% endfor %}
+    </select>
+</div>
 
-
-        <!--<a href="{% url 'create_post' %}" class="btn btn-primary mb-4">Create Post</a>-->
-
-        <div class="container d-flex flex-column justify-content-center gap-3 my-4 mt-5">
-
-            <a href="{% url 'create_post' %}" class="btn btn-primary mb-4">Create Post</a>
-
-            <a href="{% url 'found_items_view' %}" class="btn btn-primary mb-4">Found Items</a>
-            
-            <a href="{% url 'lost_items_view' %}" class="btn btn-primary">Lost Items</a>
-
-            
-        </div>
-
-
-
-    {% comment %} {% else %}
-        <a href="{% url 'verify_user' %}" class="btn btn-primary">Verify Yourself as a Student of our University</a>
-    {% endif %} {% endcomment %}
-
+<!-- Buttons Section -->
+<div class="buttons-container">
+    <a href="{% url 'create_post' %}" class="btn-create-post">Create Post</a>
+    <a href="{% url 'found_items_view' %}" class="btn-found-items">Found Items</a>
+    <a href="{% url 'lost_items_view' %}" class="btn-lost-items">Lost Items</a>
+</div>
 
 {% endblock %}

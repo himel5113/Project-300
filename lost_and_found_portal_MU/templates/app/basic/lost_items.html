@@ -8,6 +8,11 @@
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
+    a {
+        text-decoration: none;
+
+    }
+
     a.btn-primary {
         background: linear-gradient(135deg, #7f51fc, #6e21f4);
         color: white;
@@ -170,7 +175,7 @@
     }
 </style>
 
-<a href="{% url 'create_post' %}" class="btn btn-primary mt-4 mb-4">Create Post</a>
+<a href="{% url 'create_post' %}" class="btn btn-primary mt-4 mb-4">Report Lost Item</a>
 
 <div class="row">
     {% for item in items %}
@@ -200,7 +205,7 @@
                     <a href="{% url 'delete_and_backup_post' item.id %}" class="btn-custom btn-delete">Delete Post</a>
                 </div>
                 {% else %}
-                <a href="#" class="btn-warning mt-3">Founded This</a>
+                <a href="#" class="btn-warning mt-3">Found This?</a>
                 {% endif %}
             </div>
         </div>

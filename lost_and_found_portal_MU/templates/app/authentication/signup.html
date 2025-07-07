@@ -1,14 +1,81 @@
 {% extends "app/layout.html" %}
+{% load static %}
 
 {% block content %}
 
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        background: url('{% static "../media/uploads/signupbg.jpg" %}') center/cover no-repeat;
+        text-align: center;
+    }
 
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Sign Up</button>
+    .signup-container {
+        max-width: 600px;
+        width: 100%;
+        margin: auto;
+        background: rgba(255, 255, 255, 0.85);
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        padding: 2rem;
+    }
 
-    <p>Already have an account? <a href="{% url 'signin' %}">SignIn here.</a></p>
-</form>
+    .signup-row {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+    }
+
+    .signup-row div {
+        flex: 1;
+    }
+
+    .signup-container input,
+    .signup-container select {
+        width: 100%;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+    }
+
+    .signup-container button {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(90deg, #3b82f6, #6366f1);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-weight: 700;
+    }
+</style>
+
+<h2 class="signup-header">Create Your Account</h2>
+<div class="signup-container">
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="signup-row">
+            <div>{{ form.name.label_tag }}<br>{{ form.name }}</div>
+            <div>{{ form.phone.label_tag }}<br>{{ form.phone }}</div>
+        </div>
+        {% for field in form %}
+        {% if field.name != 'name' and field.name != 'phone' %}
+        <div>
+            {{ field.label_tag }}<br>
+            {{ field }}
+            {% if field.errors %}
+            <small style="color: red;">{{ field.errors|striptags }}</small>
+            {% endif %}
+        </div>
+        {% endif %}
+        {% endfor %}
+        <button type="submit">Sign Up</button>
+        <p style="margin-top:1rem;">Already have an account? <a href="{% url 'signin' %}">Login now</a>.</p>
+    </form>
+</div>
 
 {% endblock %}
