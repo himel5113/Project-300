@@ -359,35 +359,30 @@
         {% csrf_token %}
 
         <div class="form-group">
-            <label for="id_type" class="form-label">Type</label>
-            <select name="type" class="form-control" id="id_type" required>
-                <option value="">Select post type</option>
-                <option value="lost">Lost Item</option>
-                <option value="found">Found Item</option>
-            </select>
+            <label for="{{form.type.id_for_label}}" class="form-label">Type</label>
+            {{form.type}}
         </div>
 
         <div class="form-group">
-            <label for="id_title" class="form-label">Title</label>
-            <input type="text" name="title" class="form-control" id="id_title" placeholder="Enter item title" required>
+            <label for="{{form.title.id_type}}" class="form-label">Title</label>
+            {{form.title}}
         </div>
 
         <div class="form-group">
-            <label for="id_location" class="form-label">Location</label>
-            <input type="text" name="location" class="form-control" id="id_location"
-                placeholder="Where was it lost/found?" required>
+            <label for="{{form.location.id_location}}" class="form-label">Location</label>
+            {{form.location}}
         </div>
 
         <div class="form-group">
-            <label for="id_description" class="form-label">Description</label>
-            <textarea name="description" class="form-control" id="id_description"
-                placeholder="Provide detailed description..." required></textarea>
+            <label for="{{form.description.id_description}}" class="form-label">Description</label>
+            {{form.description}}
             <div class="form-help">Include as much detail as possible to help others identify the item</div>
         </div>
 
         <div class="form-group">
-            <label class="form-label">Image</label>
+            <label for="{{form.image.id_image}}" class="form-label">Image</label>
             <div class="file-input-wrapper" id="fileInputWrapper">
+                {{form.image}}
                 <input type="file" name="image" class="file-input" id="id_image" accept="image/*">
                 <label for="id_image" class="file-input-label">
 
@@ -413,6 +408,58 @@
 </div>
 
 <script>
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const fields = ['type', 'title', 'location', 'description'];
+        fields.forEach(name => {
+            const el = document.getElementById(`id_${name}`);
+            if (el) {
+                el.classList.add('form-control');
+            }
+        });
+
+        const imageInput = document.getElementById('id_image');
+        if (imageInput) {
+            imageInput.classList.add('file-input');
+            imageInput.accept = 'image/*';
+        }
+    });
+
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+    const titleField = document.getElementById('id_title');
+    const locationField = document.getElementById('id_location');
+    const descriptionField = document.getElementById('id_description');
+
+    if (titleField) {
+        titleField.placeholder = 'Enter item title';
+        titleField.classList.add('form-control');
+    }
+
+    if (locationField) {
+        locationField.placeholder = 'Where was it lost/found?';
+        locationField.classList.add('form-control');
+    }
+
+    if (descriptionField) {
+        descriptionField.placeholder = 'Provide detailed description...';
+        descriptionField.classList.add('form-control');
+    }
+
+    const typeField = document.getElementById('id_type');
+    if (typeField) {
+        typeField.classList.add('form-control');
+    }
+
+    const imageField = document.getElementById('id_image');
+    if (imageField) {
+        imageField.classList.add('file-input');
+        imageField.accept = 'image/*';
+    }
+});
+
+
     // Image preview functionality
     const imageInput = document.getElementById('id_image');
     const imagePreview = document.getElementById('imagePreview');
@@ -552,7 +599,7 @@
     const submitBtn = document.getElementById('submitBtn');
 
     function toggleSubmitButton() {
-        if (typeSelect.value === "lost" || typeSelect.value === "found") {
+        if (typeSelect.value === "Lost" || typeSelect.value === "Found") {
             submitBtn.disabled = false;
         } else {
             submitBtn.disabled = true;

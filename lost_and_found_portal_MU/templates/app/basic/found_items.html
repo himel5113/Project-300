@@ -207,7 +207,7 @@
                     <a href="{% url 'delete_and_backup_post' item.id %}" class="btn-custom btn-delete">Delete Post</a>
                 </div>
                 {% else %}
-                <a href="#" class="btn-warning mt-3">Send Claim request</a>
+                <a href="{% url 'claim_request' item.id %}" class="btn-warning mt-3">Send Claim request</a>
                 {% endif %}
             </div>
         </div>
