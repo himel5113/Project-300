@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.views.decorators.http import require_http_methods
 
 # Forms
 from .forms import SignupForm
@@ -444,34 +445,33 @@ def edit_post_view(request, item_id):
 
 
 # Delete and Backup post
+@require_http_methods(["GET"])
 def delete_and_backup_post(request, item_id):
     item = get_object_or_404(Items, id = item_id)
-    if request.method == 'POST':
+    
+    # Abstract (only for admin)
+    backup = Backup.objects.create(
+        original_item_id=item.id,
+        original_publisherId=item.publisherId,
+        original_publisherUserName=item.publisherUserName,
+        original_publisherName=item.publisherName,
+        original_itemType=item.type,
+        original_image=item.image,
+        original_title=item.title,
+        original_description=item.description,
+        original_location=item.location,
+    )
+    backup.save()
 
-        # Abstruct (only for admin)
-        backup = Backup.objects.create(
-            original_item_id=item.id,
-            original_publisherId=item.publisherId,
-            original_publisherUserName=item.publisherUserName,
-            original_publisherName=item.publisherName,
-            original_itemType=item.type,
-            original_image=item.image,
-            original_title=item.title,
-            original_description=item.description,
-            original_location=item.location,
-        )
-        backup.save()
 
+    temp = item.type
 
-        temp = item.type
-
-        item.delete()
-        messages.success(request, 'Post deleted and backed up successfully!')
-        if temp == 'Found':
-            return redirect('found_items_view')
-        else:
-            return redirect('lost_items_view')
-    return render(request, 'app/basic/delete_post.html', {'item' : item})
+    item.delete()
+    messages.success(request, 'Post deleted successfully!')
+    if temp == 'Found':
+        return redirect('found_items_view')
+    else:
+        return redirect('lost_items_view')
 
 
 
@@ -525,4 +525,4 @@ def claim_request(request, item_id):
     )
 
     messages.success(request, 'Claim request sent successfully!')
-    return redirect('itemPage')
+    return redirect('found_items_view') 

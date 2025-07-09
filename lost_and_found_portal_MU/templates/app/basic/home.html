@@ -343,7 +343,7 @@
             <p class="card-description">
                 Report a lost or found item to help others reconnect with their belongings.
             </p>
-            {% if user.is_authenticated %}
+            {% if request.session.username %}
             <a href="{% url 'create_post' %}" class="card-btn">Create Now</a>
             {% else %}
             <a href="{% url 'signin' %}" class="card-btn">Create Now</a>
@@ -356,7 +356,7 @@
             <p class="card-description">
                 View the list of items that have been found and reported by others.
             </p>
-            {% if user.is_authenticated %}
+            {% if request.session.username %}
             <a href="{% url 'found_items_view' %}" class="card-btn">Browse Found</a>
             {% else %}
             <a href="{% url 'signin' %}" class="card-btn">Browse Found</a>
@@ -369,7 +369,7 @@
             <p class="card-description">
                 Explore the items reported as lost — you might be able to help.
             </p>
-            {% if user.is_authenticated %}
+            {% if request.session.username %}
             <a href="{% url 'lost_items_view' %}" class="card-btn">Browse Lost</a>
             {% else %}
             <a href="{% url 'signin' %}" class="card-btn">Browse Lost</a>
@@ -400,54 +400,5 @@
     </section>
 </div>
 
-<!-- Footer -->
-<footer class="footer">
-    <div class="container">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>MU Lost & Found</h3>
-                <p>Connecting the University of Mauritius community through our comprehensive lost and found platform.
-                </p>
-                <div class="social-links">
-                    <a href="#" title="Facebook">📘</a>
-                    <a href="#" title="Twitter">🐦</a>
-                    <a href="#" title="Instagram">📷</a>
-                    <a href="#" title="LinkedIn">💼</a>
-                </div>
-            </div>
 
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <a href="{% url 'home' %}">Home</a>
-                {% if user.is_authenticated %}
-                <a href="{% url 'itemPage' %}">Browse Items</a>
-                <a href="{% url 'create_post' %}">Create Post</a>
-                <a href="{% url 'profile_view' %}">My Profile</a>
-                {% else %}
-                <a href="{% url 'signin' %}">Sign In</a>
-                <a href="{% url 'signup' %}">Sign Up</a>
-                {% endif %}
-            </div>
-
-            <div class="footer-section">
-                <h3>Support</h3>
-                <a href="#">Help Center</a>
-                <a href="#">Contact Us</a>
-                <a href="#">Terms of Service</a>
-                <a href="#">Privacy Policy</a>
-            </div>
-
-            <div class="footer-section">
-                <h3>Contact Info</h3>
-                <p>📧 lostfound@uom.ac.mu</p>
-                <p>📞 +230 403 7400</p>
-                <p>📍 University of Mauritius<br>Réduit, Mauritius</p>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
-            <p>&copy; 2024 MU Lost & Found. All rights reserved. | Developed for University of Mauritius</p>
-        </div>
-    </div>
-</footer>
 {% endblock %}

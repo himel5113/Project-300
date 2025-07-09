@@ -58,6 +58,135 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <!--Footer-->
+
+    <!-- Footer -->
+    <style>
+
+    /* Footer */
+    .footer {
+        background: rgba(0, 0, 0, 0.3);
+        margin-top: 6rem;
+        padding: 3rem 0 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .footer-content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .footer-section h3 {
+        color: #ffffff;
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+    .footer-section p,
+    .footer-section a {
+        color: #b3c4d1;
+        text-decoration: none;
+        line-height: 1.6;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .footer-section a:hover {
+        color: #00bcd4;
+        transition: color 0.3s ease;
+    }
+
+    .footer-bottom {
+        text-align: center;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        color: #b3c4d1;
+    }
+
+    .social-links {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .social-links a {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        text-align: center;
+        line-height: 40px;
+        color: #ffffff;
+        transition: all 0.3s ease;
+    }
+
+    .social-links a:hover {
+        background: #00bcd4;
+        transform: translateY(-2px);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+
+        .footer-content {
+            grid-template-columns: 1fr;
+            text-align: center;
+        }
+    }
+</style>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>MU Lost & Found</h3>
+                <p>Connecting the Metropolitan University community through our dedicated lost and found platform.
+                </p>
+                <div class="social-links">
+                    <a href="#" title="Facebook">📘</a>
+                    <a href="#" title="Twitter">🐦</a>
+                    <a href="#" title="Instagram">📷</a>
+                    <a href="#" title="LinkedIn">💼</a>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <a href="{% url 'home' %}">Home</a>
+                {% if request.session.username %}
+                <a href="{% url 'itemPage' %}">Browse Items</a>
+                <a href="{% url 'create_post' %}">Create Post</a>
+                <a href="{% url 'profile_view' %}">My Profile</a>
+                {% else %}
+                <a href="{% url 'signin' %}">Sign In</a>
+                <a href="{% url 'signup' %}">Sign Up</a>
+                {% endif %}
+            </div>
+
+            <div class="footer-section">
+                <h3>Support</h3>
+                <a href="#">Help Center</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Privacy Policy</a>
+            </div>
+
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <p>📧 lostfound@metrouni.edu.bd</p>
+                <p>📞 +880-1313-050044</p>
+                <p>📍 Metropolitan University<br>&nbsp;&nbsp;&nbsp;&nbsp; Bateshwar, Sylhet, 3104</p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 MU Lost & Found. All rights reserved. | Developed for Metropolitan University</p>
+        </div>
+    </div>
+</footer>
     
 </body>
 
