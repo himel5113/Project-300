@@ -1,12 +1,624 @@
 {% extends "app/layout.html" %}
 
-
 {% block content %}
+<div class="modern-form-container">
+    <div class="background-gradient"></div>
+    <div class="background-pattern"></div>
 
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Save changes</button>
-</form>
+    <div class="form-card">
+        <div class="form-header">
+            <h1 class="form-title">Create New Post</h1>
+        </div>
 
+        <div class="form-body">
+            <form method="POST" enctype="multipart/form-data" class="modern-form">
+                {% csrf_token %}
+                <div class="form-container">
+                    <p>{{ form.type.label_tag }}{{ form.type }}</p>
+                    <p>{{ form.title.label_tag }}{{ form.title }}</p>
+                    <p>{{ form.location.label_tag }}{{ form.location }}</p>
+                    <p>{{ form.description.label_tag }}{{ form.description }}</p>
+
+                    <p>
+                        {{ form.image.label_tag }}
+                        <input type="file" name="image" id="id_image" accept="image/*">
+                    </p>
+
+                    <p id="image-preview-wrapper" style="margin-top: 12px; display: none;">
+                        <img id="image-preview"
+                            style="max-width: 120px; border-radius: 8px; display: block; margin-bottom: 8px;" />
+                    <div style="display: flex; gap: 10px;">
+                        <label for="id_image" class="btn-secondary" style="cursor:pointer;">Change</label>
+                        <button type="button" class="btn-danger" id="remove-image-btn">Remove</button>
+                    </div>
+                    </p>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary-modern">
+                        <i class="fas fa-plus me-2"></i>Create Post
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        overflow-x: hidden;
+    }
+
+    .modern-form-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        position: relative;
+    }
+
+    .background-gradient {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #2D1B69 0%, #1A0F3A 50%, #0F0725 100%);
+        z-index: -2;
+    }
+
+    .background-pattern {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image:
+            radial-gradient(circle at 20% 20%, rgba(147, 51, 234, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(79, 70, 229, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 40% 60%, rgba(168, 85, 247, 0.05) 0%, transparent 50%);
+        z-index: -1;
+    }
+
+    .form-card {
+        width: 100%;
+        max-width: 480px;
+        background: rgba(255, 255, 255, 0.02);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        box-shadow:
+            0 20px 40px rgba(0, 0, 0, 0.3),
+            0 8px 16px rgba(0, 0, 0, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+    }
+
+    .form-header {
+        padding: 40px 40px 20px;
+        text-align: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .form-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #ffffff;
+        margin: 0;
+        background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .form-body {
+        padding: 40px;
+    }
+
+    .modern-form p {
+        margin-bottom: 24px;
+        position: relative;
+    }
+
+    .modern-form label {
+        display: block;
+        font-weight: 600;
+        color: #e0e7ff;
+        margin-bottom: 8px;
+        font-size: 14px;
+        letter-spacing: 0.5px;
+    }
+
+    .modern-form input[type="text"],
+    .modern-form input[type="email"],
+    .modern-form input[type="password"],
+    .modern-form input[type="tel"],
+    .modern-form input[type="url"],
+    .modern-form input[type="date"],
+    .modern-form input[type="datetime-local"],
+    .modern-form input[type="number"],
+    .modern-form textarea,
+    .modern-form select {
+        width: 100%;
+        padding: 16px 20px;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        font-size: 16px;
+        background: rgba(255, 255, 255, 0.05);
+        color: #ffffff;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    .modern-form input[type="text"]::placeholder,
+    .modern-form input[type="email"]::placeholder,
+    .modern-form input[type="password"]::placeholder,
+    .modern-form input[type="tel"]::placeholder,
+    .modern-form input[type="url"]::placeholder,
+    .modern-form textarea::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .modern-form input[type="text"]:focus,
+    .modern-form input[type="email"]:focus,
+    .modern-form input[type="password"]:focus,
+    .modern-form input[type="tel"]:focus,
+    .modern-form input[type="url"]:focus,
+    .modern-form input[type="date"]:focus,
+    .modern-form input[type="datetime-local"]:focus,
+    .modern-form input[type="number"]:focus,
+    .modern-form textarea:focus,
+    .modern-form select:focus {
+        outline: none;
+        border-color: #8b5cf6;
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .modern-form textarea {
+        min-height: 120px;
+        max-height: 150px;
+        resize: none;
+        font-family: inherit;
+        overflow-y: auto;
+        transition: height 0.2s ease;
+    }
+
+
+    .modern-form select {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 16px center;
+        background-size: 16px 12px;
+        padding-right: 48px;
+        cursor: pointer;
+    }
+
+    .modern-form select option {
+        background: #2D1B69;
+        color: #ffffff;
+        padding: 12px;
+    }
+
+    .modern-form input[type="file"] {
+        display: none;
+    }
+
+    .modern-form input[type="file"]+label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 20px;
+        border: 2px dashed rgba(139, 92, 246, 0.5);
+        border-radius: 12px;
+        background: rgba(139, 92, 246, 0.05);
+        color: #8b5cf6;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+
+    .modern-form input[type="file"]+label:hover {
+        border-color: #8b5cf6;
+        background: rgba(139, 92, 246, 0.1);
+    }
+
+    .modern-form input[type="file"]+label i {
+        margin-right: 8px;
+        font-size: 18px;
+    }
+
+    .modern-form input[type="checkbox"],
+    .modern-form input[type="radio"] {
+        width: 18px;
+        height: 18px;
+        margin-right: 12px;
+        accent-color: #8b5cf6;
+    }
+
+    .form-actions {
+        margin-top: 32px;
+        padding-top: 32px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-primary-modern {
+        width: 100%;
+        padding: 18px 24px;
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        border: none;
+        border-radius: 12px;
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        letter-spacing: 0.5px;
+    }
+
+    .btn-primary-modern:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
+        background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+    }
+
+    .btn-primary-modern:active {
+        transform: translateY(0);
+    }
+
+    .btn-primary-modern:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    /* Error styling */
+    .modern-form .errorlist {
+        list-style: none;
+        padding: 0;
+        margin: 8px 0 0 0;
+    }
+
+    .modern-form .errorlist li {
+        color: #fecaca;
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        border-radius: 8px;
+        padding: 12px 16px;
+        margin-bottom: 8px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+    }
+
+    .modern-form .errorlist li:before {
+        content: "⚠";
+        margin-right: 8px;
+        font-size: 16px;
+    }
+
+    /* Help text styling */
+    .modern-form .helptext {
+        display: block;
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.6);
+        margin-top: 8px;
+        font-style: italic;
+    }
+
+    .modern-form .helptext:before {
+        content: "💡";
+        margin-right: 6px;
+    }
+
+    /* Required field indicator */
+    .modern-form label:after {
+        content: " *";
+        color: #8b5cf6;
+        font-weight: bold;
+    }
+
+    /* Loading state */
+    .btn-loading {
+        position: relative;
+        pointer-events: none;
+    }
+
+    .btn-loading:before {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        margin: auto;
+        border: 2px solid transparent;
+        border-top-color: #ffffff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    #image-preview-container img {
+        max-width: 100%;
+        margin-top: 10px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-secondary {
+        background: #6b7280;
+        color: #fff;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 14px;
+        border: none;
+
+    }
+
+    .btn-secondary:hover {
+        background: #4b5563;
+    }
+
+    .btn-danger {
+        background: #ef4444;
+        color: #fff;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 14px;
+        border: none;
+    }
+
+    .btn-danger:hover {
+        background: #dc2626;
+    }
+
+    #image-preview-wrapper .btn-secondary,
+    #image-preview-wrapper .btn-danger {
+        width: 100px;
+        height: 100px;
+        text-align: center;
+        padding: 8px 12px;
+        font-size: 14px;
+        border-radius: 6px;
+    }
+
+    @media (max-width: 480px) {
+        #image-preview-wrapper div {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        #image-preview-wrapper .btn-secondary,
+        #image-preview-wrapper .btn-danger {
+            width: 100%;
+        }
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .modern-form-container {
+            padding: 12px;
+        }
+
+        .form-card {
+            max-width: 100%;
+            border-radius: 16px;
+        }
+
+        .form-header {
+            padding: 24px 24px 16px;
+        }
+
+        .form-title {
+            font-size: 1.5rem;
+        }
+
+        .form-body {
+            padding: 24px;
+        }
+
+        .modern-form p {
+            margin-bottom: 20px;
+        }
+
+        .modern-form input[type="text"],
+        .modern-form input[type="email"],
+        .modern-form input[type="password"],
+        .modern-form input[type="tel"],
+        .modern-form input[type="url"],
+        .modern-form input[type="date"],
+        .modern-form input[type="datetime-local"],
+        .modern-form input[type="number"],
+        .modern-form textarea,
+        .modern-form select {
+            padding: 14px 16px;
+            font-size: 16px;
+            /* Prevents zoom on iOS */
+        }
+
+        .btn-primary-modern {
+            padding: 16px 20px;
+            font-size: 15px;
+        }
+
+        .form-actions {
+            margin-top: 24px;
+            padding-top: 24px;
+        }
+    }
+
+    /* Custom scrollbar for webkit browsers */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: rgba(139, 92, 246, 0.5);
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: rgba(139, 92, 246, 0.7);
+    }
+
+    /* Focus outline for accessibility */
+    .modern-form *:focus {
+        outline: 2px solid #8b5cf6;
+        outline-offset: 2px;
+    }
+
+    /* Animation for form validation */
+    .modern-form input:invalid,
+    .modern-form textarea:invalid,
+    .modern-form select:invalid {
+        animation: shake 0.5s ease-in-out;
+    }
+
+    @keyframes shake {
+
+        0%,
+        100% {
+            transform: translateX(0);
+        }
+
+        10%,
+        30%,
+        50%,
+        70%,
+        90% {
+            transform: translateX(-3px);
+        }
+
+        20%,
+        40%,
+        60%,
+        80% {
+            transform: translateX(3px);
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Auto-resize all textareas
+        document.querySelectorAll('textarea').forEach(textarea => {
+            textarea.addEventListener('input', function () {
+                this.style.height = 'auto';
+                const maxHeight = 150;
+                const scrollHeight = this.scrollHeight;
+
+                if (scrollHeight <= maxHeight) {
+                    this.style.height = scrollHeight + 'px';
+                    this.style.overflowY = 'hidden';
+                } else {
+                    this.style.height = maxHeight + 'px';
+                    this.style.overflowY = 'auto';
+                }
+            });
+        });
+
+        // Submit button loading state
+        const form = document.querySelector('form');
+        const submitBtn = document.querySelector('.btn-primary-modern');
+        if (form && submitBtn) {
+            form.addEventListener('submit', function () {
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating...';
+                submitBtn.disabled = true;
+                submitBtn.classList.add('btn-loading');
+            });
+        }
+
+        // Form validation with focus styles
+        const inputs = form.querySelectorAll('input, textarea, select');
+        inputs.forEach(input => {
+            input.addEventListener('blur', function () {
+                if (this.hasAttribute('required') && !this.value.trim()) {
+                    this.style.borderColor = '#ef4444';
+                    this.style.boxShadow = '0 0 0 3px rgba(239, 68, 68, 0.2)';
+                } else {
+                    this.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                    this.style.boxShadow = 'none';
+                }
+            });
+            input.addEventListener('focus', function () {
+                this.style.borderColor = '#8b5cf6';
+                this.style.boxShadow = '0 0 0 3px rgba(139, 92, 246, 0.2)';
+            });
+        });
+
+        // File input style and live filename update
+        const fileInput = document.getElementById('id_image');
+        if (fileInput) {
+            const label = document.createElement('label');
+            label.setAttribute('for', fileInput.id);
+            label.innerHTML = '<i class="fas fa-upload"></i>Choose Image';
+            label.className = 'file-input-label';
+            fileInput.parentNode.insertBefore(label, fileInput.nextSibling);
+
+            fileInput.addEventListener('change', function () {
+                const fileName = this.files[0] ? this.files[0].name : 'Choose Image';
+                label.innerHTML = `<i class="fas fa-check"></i>${fileName}`;
+            });
+        }
+
+        // Show preview for newly selected file
+        const previewImg = document.getElementById('image-preview');
+        const previewWrapper = document.getElementById('image-preview-wrapper');
+        const removeBtn = document.getElementById('remove-image-btn');
+
+        if (fileInput && previewImg && previewWrapper && removeBtn) {
+            fileInput.addEventListener('change', function () {
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        previewImg.src = e.target.result;
+                        previewWrapper.style.display = 'block';
+                    };
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+
+            removeBtn.addEventListener('click', function () {
+                fileInput.value = '';
+                previewImg.src = '';
+                previewWrapper.style.display = 'none';
+            });
+        }
+
+        // Animate form on load
+        const formCard = document.querySelector('.form-card');
+        formCard.style.opacity = '0';
+        formCard.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            formCard.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            formCard.style.opacity = '1';
+            formCard.style.transform = 'translateY(0)';
+        }, 100);
+    });
+</script>
 {% endblock %}
