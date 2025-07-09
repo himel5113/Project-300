@@ -41,8 +41,8 @@ class Items(models.Model):
 
     itemsType = [
         ('Select post type', 'Select post type'),
-        ('Found Item', 'Found Item'),
-        ('Lost Item', 'Lost Item'),
+        ('Found', 'Found'),
+        ('Lost', 'Lost'),
     ]
 
 
@@ -66,8 +66,8 @@ class Items(models.Model):
 class Backup(models.Model):
     itemsType = [
         ('Select post type', 'Select post type'),
-        ('Found Item', 'Found Item'),
-        ('Lost Item', 'Lost Item'),
+        ('Found', 'Found'),
+        ('Lost', 'Lost'),
     ]
 
     original_item_id = models.IntegerField(null = True, blank = True)
