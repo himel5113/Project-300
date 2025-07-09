@@ -16,7 +16,7 @@
     }
 
     .form-container {
-        max-width: 600px;
+        max-width: 400px;
         margin: 2rem auto;
         padding: 2rem;
         background: linear-gradient(145deg, #3b2c96, #261f66);
@@ -84,17 +84,21 @@
 
     textarea.form-control {
         min-height: 120px;
-        max-height: 300px;
+        max-height: 120px;
         resize: none;
         overflow-y: hidden;
         transition: height 0.2s ease;
+        scrollbar-width: thin;
+        /* Firefox */
+        scrollbar-color: #7c3aed rgba(30, 27, 75, 0.5);
     }
 
+    /* When scroll is needed */
     textarea.form-control.scrollable {
         overflow-y: auto;
     }
 
-    /* Custom scrollbar styling */
+    /* Custom scrollbar styling for WebKit browsers (Chrome, Edge, Safari) */
     textarea.form-control::-webkit-scrollbar {
         width: 8px;
     }
@@ -114,11 +118,6 @@
         background: linear-gradient(135deg, #6d28d9, #4338ca);
     }
 
-    /* Firefox scrollbar styling */
-    textarea.form-control {
-        scrollbar-width: thin;
-        scrollbar-color: #7c3aed rgba(30, 27, 75, 0.5);
-    }
 
     .file-input-wrapper {
         position: relative;
@@ -408,7 +407,6 @@
 </div>
 
 <script>
-
     document.addEventListener('DOMContentLoaded', () => {
         const fields = ['type', 'title', 'location', 'description'];
         fields.forEach(name => {
@@ -425,40 +423,68 @@
         }
     });
 
-
-
     document.addEventListener('DOMContentLoaded', () => {
-    const titleField = document.getElementById('id_title');
-    const locationField = document.getElementById('id_location');
-    const descriptionField = document.getElementById('id_description');
+        const titleField = document.getElementById('id_title');
+        const locationField = document.getElementById('id_location');
+        const descriptionField = document.getElementById('id_description');
 
-    if (titleField) {
-        titleField.placeholder = 'Enter item title';
-        titleField.classList.add('form-control');
+        if (titleField) {
+            titleField.placeholder = 'Enter item title';
+            titleField.classList.add('form-control');
+        }
+
+        if (locationField) {
+            locationField.placeholder = 'Where was it lost/found?';
+            locationField.classList.add('form-control');
+        }
+
+        if (descriptionField) {
+            descriptionField.placeholder = 'Provide detailed description...';
+            descriptionField.classList.add('form-control');
+        }
+
+        const typeField = document.getElementById('id_type');
+        if (typeField) {
+            typeField.classList.add('form-control');
+        }
+
+        const imageField = document.getElementById('id_image');
+        if (imageField) {
+            imageField.classList.add('file-input');
+            imageField.accept = 'image/*';
+        }
+
+        // Auto-resize description on load
+        if (descriptionField) {
+            autoResizeTextarea(descriptionField);
+
+            descriptionField.addEventListener('input', function () {
+                autoResizeTextarea(this);
+            });
+
+            descriptionField.addEventListener('paste', function () {
+                setTimeout(() => autoResizeTextarea(this), 10);
+            });
+        }
+    });
+
+    // Auto-resize textarea
+    function autoResizeTextarea(textarea) {
+        textarea.style.height = 'auto';
+        const scrollHeight = textarea.scrollHeight;
+        const minHeight = 120;
+        const maxHeight = 300;
+
+        if (scrollHeight <= maxHeight) {
+            textarea.style.height = Math.max(scrollHeight, minHeight) + 'px';
+            textarea.style.overflowY = 'hidden';
+            textarea.classList.remove('scrollable');
+        } else {
+            textarea.style.height = maxHeight + 'px';
+            textarea.style.overflowY = 'auto';
+            textarea.classList.add('scrollable');
+        }
     }
-
-    if (locationField) {
-        locationField.placeholder = 'Where was it lost/found?';
-        locationField.classList.add('form-control');
-    }
-
-    if (descriptionField) {
-        descriptionField.placeholder = 'Provide detailed description...';
-        descriptionField.classList.add('form-control');
-    }
-
-    const typeField = document.getElementById('id_type');
-    if (typeField) {
-        typeField.classList.add('form-control');
-    }
-
-    const imageField = document.getElementById('id_image');
-    if (imageField) {
-        imageField.classList.add('file-input');
-        imageField.accept = 'image/*';
-    }
-});
-
 
     // Image preview functionality
     const imageInput = document.getElementById('id_image');
@@ -488,18 +514,15 @@
         imageInput.value = '';
     }
 
-    // File input handling with preview
     imageInput.addEventListener('change', function (e) {
         const file = e.target.files[0];
         if (file) {
-            // Validate file type
             if (!file.type.startsWith('image/')) {
                 alert('Please select a valid image file.');
                 this.value = '';
                 return;
             }
 
-            // Validate file size (max 5MB)
             if (file.size > 5 * 1024 * 1024) {
                 alert('Please select an image smaller than 5MB.');
                 this.value = '';
@@ -512,51 +535,14 @@
         }
     });
 
-    // Change image button
     changeImageBtn.addEventListener('click', function () {
         imageInput.click();
     });
 
-    // Remove image button
     removeImageBtn.addEventListener('click', function () {
         hideImagePreview();
     });
 
-    // Auto-resize textarea functionality
-    function autoResizeTextarea(textarea) {
-        textarea.style.height = 'auto';
-        const scrollHeight = textarea.scrollHeight;
-        const minHeight = 120;
-        const maxHeight = 300;
-
-        if (scrollHeight <= maxHeight) {
-            textarea.style.height = Math.max(scrollHeight, minHeight) + 'px';
-            textarea.style.overflowY = 'hidden';
-            textarea.classList.remove('scrollable');
-        } else {
-            textarea.style.height = maxHeight + 'px';
-            textarea.style.overflowY = 'auto';
-            textarea.classList.add('scrollable');
-        }
-    }
-
-    // Initialize textarea auto-resize
-    const descriptionTextarea = document.getElementById('id_description');
-    if (descriptionTextarea) {
-        // Set initial height
-        descriptionTextarea.style.height = '120px';
-
-        // Add event listeners for auto-resize
-        descriptionTextarea.addEventListener('input', function () {
-            autoResizeTextarea(this);
-        });
-
-        descriptionTextarea.addEventListener('paste', function () {
-            setTimeout(() => autoResizeTextarea(this), 10);
-        });
-    }
-
-    // File input handling
     document.getElementById('id_image').addEventListener('change', function (e) {
         const fileName = e.target.files[0]?.name || '';
         const fileNameDiv = document.getElementById('fileName');
@@ -567,7 +553,6 @@
         }
     });
 
-    // Form validation
     document.getElementById('createPostForm').addEventListener('submit', function (e) {
         const requiredFields = ['type', 'title', 'location', 'description'];
         let isValid = true;
@@ -588,7 +573,6 @@
         }
     });
 
-    // Remove error class on input
     document.querySelectorAll('.form-control').forEach(input => {
         input.addEventListener('input', function () {
             this.classList.remove('error');
@@ -606,11 +590,10 @@
         }
     }
 
-    // Initial check on page load
     toggleSubmitButton();
-
-    // Listen for changes
     typeSelect.addEventListener('change', toggleSubmitButton);
+
+
 </script>
 
 {% endblock %}

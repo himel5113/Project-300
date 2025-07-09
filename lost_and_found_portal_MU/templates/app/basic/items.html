@@ -10,7 +10,6 @@
         padding: 0;
     }
 
-    /* Centered heading and intro text */
     .intro-section {
         text-align: center;
         margin-top: 3rem;
@@ -24,98 +23,126 @@
     }
 
     .intro-section p {
-        color: #d1d5db;
         font-size: 1.125rem;
+        color: #d1d5db;
     }
 
-    /* Search and dropdown styling */
-    .search-section {
-        background: linear-gradient(145deg, #3b2c96, #261f66);
-        /* Subtle gradient */
-        padding: 2rem 1.5rem;
-        border-radius: 1.25rem;
-        box-shadow: 0 10px 30px rgba(67, 48, 170, 0.3);
-        margin: 3rem auto;
-        width: 80%;
-        max-width: 800px;
-    }
-
-    .search-section h3 {
-        color: #e0e7ff;
-        font-size: 1.5rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .search-section select {
-        width: 100%;
-        padding: 0.875rem;
-        border-radius: 0.75rem;
-        border: 1px solid rgba(196, 181, 253, 0.3);
-        background: #1e1b4b;
-        color: #e2e8f0;
-        font-size: 1rem;
-        margin-bottom: 1.5rem;
-        transition: all 0.3s ease;
-    }
-
-    .search-section select:hover {
-        border-color: #7f51fc;
-        box-shadow: 0 0 8px rgba(124, 58, 237, 0.4);
-    }
-
-    .search-section select:focus {
-        outline: none;
-        border-color: #7f51fc;
-        box-shadow: 0 0 8px rgba(124, 58, 237, 0.4);
-    }
-
-    /* Buttons Container */
-    .buttons-container {
+    .card-grid {
         display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-        align-items: center;
-        margin-top: 2rem;
+        justify-content: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+        margin: 3rem auto;
+        padding: 0 2rem;
+        max-width: 1000px;
     }
 
-    .buttons-container a {
-        background: linear-gradient(135deg, #7f51fc, #6e21f4);
-        padding: 0.75rem 1.5rem;
-        border-radius: 1rem;
+    .action-card {
+        border-radius: 1.25rem;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        width: 280px;
+        padding: 2rem;
         text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .action-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    .action-card h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .action-card p {
         font-size: 1rem;
-        color: #fff;
-        font-weight: 600;
+        margin-bottom: 1.5rem;
+    }
+
+    .action-card a {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.75rem;
         text-decoration: none;
-        width: 60%;
-        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
-        transition: all 0.3s ease;
-        border: none;
+        font-weight: 700;
+        font-size: 1rem;
+        transition: background 0.3s ease, color 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
-    .buttons-container a:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
-        background: linear-gradient(135deg, #5f3aeb, #4c1fd6);
+    /* --- Create Post Card --- */
+    .create-post {
+        background-color: #7e22ce;
+        color: #ffffff;
     }
 
-    /* Responsive adjustments */
+    .create-post h2,
+    .create-post p {
+        color: #ffffff;
+    }
+
+    .create-post a {
+        background-color: #5b21b6;
+        color: #ffffff;
+    }
+
+    .create-post a:hover {
+        background-color: #4c1d95;
+    }
+
+    /* --- Found Items Card --- */
+    .found-items {
+        background-color: #0ea5e9;
+        color: #ffffff;
+    }
+
+    .found-items h2,
+    .found-items p {
+        color: #ffffff;
+    }
+
+    .found-items a {
+        background-color: #ffffff;
+        color: #1e1b4b;
+    }
+
+    .found-items a:hover {
+        background-color: #e2e8f0;
+        color: #1e1b4b;
+    }
+
+    /* --- Lost Items Card --- */
+    .lost-items {
+        background-color: #fbbf24;
+        color: #1e1b4b;
+    }
+
+    .lost-items h2,
+    .lost-items p {
+        color: #1e1b4b;
+    }
+
+    .lost-items a {
+        background-color: #1e1b4b;
+        color: #ffffff;
+    }
+
+    .lost-items a:hover {
+        background-color: #312e81;
+        color: #ffffff;
+    }
+
+    /* Responsive Layout */
     @media (max-width: 768px) {
-        .search-section {
-            width: 90%;
-        }
-
-        .buttons-container a {
-            width: 80%;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .buttons-container a {
-            width: 100%;
+        .card-grid {
+            flex-direction: column;
+            align-items: center;
         }
     }
 </style>
+
 
 <!-- Intro Section -->
 <div class="intro-section">
@@ -123,36 +150,25 @@
     <p>Here you can find items that have been reported as found or lost.</p>
 </div>
 
-<!-- Search Section -->
-<div class="search-section">
-    <h3>Quick Search</h3>
+<!-- Action Cards -->
+<div class="card-grid">
+    <div class="action-card create-post">
+        <h2>Create Post</h2>
+        <p>Report a lost or found item to help others reconnect with their belongings.</p>
+        <a href="{% url 'create_post' %}">Create Now</a>
+    </div>
 
-    <h3>Found Items List:</h3>
-    <select onchange="if(this.value) window.location.href=this.value;">
-        <option value="">Select a found item...</option>
-        {% for item in found_items %}
-        <option value="{% url 'found_items_view' %}?item_id={{ item.id }}">{{ item.title }}</option>
-        {% empty %}
-        <option disabled>No found items reported yet.</option>
-        {% endfor %}
-    </select>
+    <div class="action-card found-items">
+        <h2>Found Items</h2>
+        <p>View the list of items that have been found and reported by others.</p>
+        <a href="{% url 'found_items_view' %}">Browse Found</a>
+    </div>
 
-    <h3>Lost Items List:</h3>
-    <select onchange="if(this.value) window.location.href=this.value;">
-        <option value="">Select a lost item...</option>
-        {% for item in lost_items %}
-        <option value="{% url 'lost_items_view' %}?item_id={{ item.id }}">{{ item.title }}</option>
-        {% empty %}
-        <option disabled>No lost items reported yet.</option>
-        {% endfor %}
-    </select>
-</div>
-
-<!-- Buttons Section -->
-<div class="buttons-container">
-    <a href="{% url 'create_post' %}" class="btn-create-post">Create Post</a>
-    <a href="{% url 'found_items_view' %}" class="btn-found-items">Found Items</a>
-    <a href="{% url 'lost_items_view' %}" class="btn-lost-items">Lost Items</a>
+    <div class="action-card lost-items">
+        <h2>Lost Items</h2>
+        <p>Explore the items reported as lost — you might be able to help.</p>
+        <a href="{% url 'lost_items_view' %}">Browse Lost</a>
+    </div>
 </div>
 
 {% endblock %}
