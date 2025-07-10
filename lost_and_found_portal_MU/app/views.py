@@ -136,7 +136,13 @@ def logout_(request):
 # Profile view
 # Development Phase
 def profile_view(request):
-    return render(request, 'app/user/profile.html')
+    user_id = request.session.get('user_id')
+    if not user_id:
+        messages.error(request, 'Please Login first.')
+        return redirect('signin')
+
+    user = UserModel.objects.get(id=user_id)
+    return render(request, 'app/user/profile.html', {'user' : user})
 
 
 
