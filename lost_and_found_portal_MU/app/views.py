@@ -21,6 +21,7 @@ from django.contrib.auth.hashers import make_password, check_password
 
 from django.core.mail import send_mail
 from django.conf import settings
+import textwrap
 
 
 # Create your views here.
@@ -478,7 +479,7 @@ def delete_and_backup_post(request, item_id):
         return redirect('found_items_view')
     else:
         return redirect('lost_items_view')
-
+    
 
 
 
@@ -499,7 +500,7 @@ def claim_request(request, item_id):
     publisher = get_object_or_404(UserModel, mu_id=item.publisherId)
 
     subject = f"Claim Request for Item: {item.title}"
-    message = f"""
+    message = textwrap.dedent(f"""
     Dear {publisher.name},
 
     {claimer.name} (email: {claimer.email}) has requested to claim the item you posted.
@@ -520,7 +521,7 @@ def claim_request(request, item_id):
 
     With best regards,
     Lost & Found Team
-    """
+    """)
 
     send_mail(
         subject,
@@ -532,3 +533,47 @@ def claim_request(request, item_id):
 
     messages.success(request, 'Claim request sent successfully!')
     return redirect('found_items_view') 
+
+
+
+# Found notification
+
+def found_notification(request, item_id): 
+    item = get_object_or_404(Items, id=item_id)
+    finder = get_object_or_404(UserModel, id=request.session.get('user_id'))
+    publisher = get_object_or_404(UserModel, mu_id=item.publisherId)
+
+    subject = f"Found Notification for Item: {item.title}"
+    message = textwrap.dedent(f"""
+        Dear {publisher.name},
+
+        {finder.name} (email: {finder.email}) has reported that they found the item you posted.
+
+        Item Details:
+        Title: {item.title}
+        Location Found: {item.location}
+        Description: {item.description}
+
+        Please get in touch with the finder to arrange the return of your item.
+
+        Here's the finder details:
+        Name: {finder.name}
+        Email: {finder.email}
+        Department: {finder.dept}
+        University ID: {finder.mu_id}
+        Phone: {finder.phone}
+
+        Best regards,
+        Lost & Found Team
+        """)
+
+    send_mail(
+        subject,
+        message,
+        settings.DEFAULT_FROM_EMAIL,
+        [publisher.email],
+        fail_silently=False
+    )
+
+    messages.success(request, 'Found notification sent successfully!')
+    return redirect('lost_items_view')

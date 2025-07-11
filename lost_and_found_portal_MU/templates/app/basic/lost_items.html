@@ -359,7 +359,7 @@
                         onclick="showDeletePopup('{{ item.id }}', '{{ item.title }}')">Delete Post</button>
                 </div>
                 {% else %}
-                <a href="{% url 'claim_request' item.id %}" class="btn-warning mt-3">Found This?</a>
+                <a href="{% url 'found_notification' item.id %}" class="btn-warning mt-3">Found This?</a>
                 {% endif %}
             </div>
         </div>
