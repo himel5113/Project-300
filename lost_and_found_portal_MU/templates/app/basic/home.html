@@ -325,7 +325,9 @@
 </style>
 
 <div class="container">
-    <!-- Hero Section -->
+    
+    {% if request.session.username %}
+        <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
             <h1 class="hero-title">Find Your Items Here</h1>
@@ -343,11 +345,7 @@
             <p class="card-description">
                 Report a lost or found item to help others reconnect with their belongings.
             </p>
-            {% if request.session.username %}
             <a href="{% url 'create_post' %}" class="card-btn">Create Now</a>
-            {% else %}
-            <a href="{% url 'signin' %}" class="card-btn">Create Now</a>
-            {% endif %}
         </div>
 
         <div class="action-card found-card">
@@ -356,11 +354,7 @@
             <p class="card-description">
                 View the list of items that have been found and reported by others.
             </p>
-            {% if request.session.username %}
             <a href="{% url 'found_items_view' %}" class="card-btn">Browse Found</a>
-            {% else %}
-            <a href="{% url 'signin' %}" class="card-btn">Browse Found</a>
-            {% endif %}
         </div>
 
         <div class="action-card lost-card">
@@ -369,13 +363,29 @@
             <p class="card-description">
                 Explore the items reported as lost — you might be able to help.
             </p>
-            {% if request.session.username %}
             <a href="{% url 'lost_items_view' %}" class="card-btn">Browse Lost</a>
-            {% else %}
-            <a href="{% url 'signin' %}" class="card-btn">Browse Lost</a>
-            {% endif %}
         </div>
     </section>
+
+    {% else %}
+        <section class="hero">
+    <div class="hero-content" style="max-width: 700px; margin: 0 auto;">
+        <h1 class="hero-title" style="margin-bottom: 1.2rem;">
+            Welcome to the Lost & Found Portal
+        </h1>
+        <p class="hero-subtitle" style="margin-bottom: 2rem;">
+            Your trusted platform at Metropolitan University for reporting, finding, and reuniting lost items with their rightful owners.
+        </p>
+        <a href="{% url 'signin' %}" class="card-btn" style="margin-top: 0;">
+            Get Started
+        </a>
+    </div>
+</section>
+    {% endif %}
+
+
+
+
 
     <!-- Stats Section -->
     <section class="stats-section">

@@ -157,9 +157,12 @@
                 <h3>Quick Links</h3>
                 <a href="{% url 'home' %}">Home</a>
                 {% if request.session.username %}
-                <a href="{% url 'itemPage' %}">Browse Items</a>
-                <a href="{% url 'create_post' %}">Create Post</a>
+                {% comment %} <a href="{% url 'itemPage' %}">Browse Items</a> {% endcomment %}
                 <a href="{% url 'profile_view' %}">My Profile</a>
+                <a href="{% url 'create_post' %}">Create Post</a>
+                <a href="#">Quick Search</a>
+                <a href="{% url 'found_items_view' %}">Browse Found Items</a>
+                <a href="{% url 'lost_items_view' %}">Browse Lost Items</a>
                 {% else %}
                 <a href="{% url 'signin' %}">Sign In</a>
                 <a href="{% url 'signup' %}">Sign Up</a>
