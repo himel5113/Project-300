@@ -35,10 +35,12 @@
 
     {% if notifications %}
         {% for note in notifications %}
+                {% if note.item %}
                 <p>{{note.sender}} wants to claim your item: {{note.item.title}}</p>
 
-                <a href="#" class="btn btn-success">Accept</a>
-                <a href="#" class="btn btn-danger">Reject</a>
+                <a href="{% url 'accept_request' note.item.id %}" class="btn btn-success">Accept</a>
+                <a href="{% url 'home' %}" class="btn btn-danger">Reject</a>
+                {% endif %}
         {% endfor %}
     {% endif %}
 </div>

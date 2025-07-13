@@ -104,11 +104,11 @@ class NotificationModel(models.Model):
     recipient_muID = models.CharField(max_length=11, null=True, blank=True)
     sender = models.CharField(max_length=50, null=True, blank=True)
     sender_muID = models.CharField(max_length=11, null=True, blank=True)
-    item = models.ForeignKey(Items, on_delete=models.CASCADE)
+    item = models.ForeignKey(Items, on_delete=models.SET_NULL, null=True, blank=True)
     message = models.TextField()
     type = models.CharField(choices=types, default='default')
     status = models.CharField(choices=statusChoice, default='Pending')
 
-    def __str__(self):
-        return f'Notification for {self.item.title}'
+    # def __str__(self):
+    #     return f'Notification for {self.item.title}'
 

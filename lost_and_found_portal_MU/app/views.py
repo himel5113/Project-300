@@ -618,3 +618,44 @@ def notification_view(request):
     # print(f'User ID: {user.mu_id}')  # Debugging line
     notifications = NotificationModel.objects.filter(recipient_muID=user.mu_id)
     return render(request, 'app/basic/notification.html', {'notifications': notifications})
+
+
+
+# accept request
+
+@require_http_methods(["GET"])
+def accept_request(request, item_id):
+    item = get_object_or_404(Items, id = item_id)
+    
+    # Abstract (only for admin)
+    backup = Backup.objects.create(
+        original_item_id=item.id,
+        original_publisherId=item.publisherId,
+        original_publisherUserName=item.publisherUserName,
+        original_publisherName=item.publisherName,
+        original_itemType=item.type,
+        original_image=item.image,
+        original_title=item.title,
+        original_description=item.description,
+        original_location=item.location,
+    )
+    backup.save()
+    
+    notification = NotificationModel.objects.get(
+        item = item,
+        recipient_muID=item.publisherId,
+        status = 'Pending'
+    )
+
+    notification.status = 'Accept'
+    notification.save()
+
+
+    temp = item.type
+
+    item.delete()
+    messages.success(request, 'Request Accepted!')
+    return redirect('notification_view')
+
+
+# reject request
