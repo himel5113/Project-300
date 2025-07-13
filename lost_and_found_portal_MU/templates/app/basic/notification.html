@@ -1,0 +1,45 @@
+{% extends "app/layout.html" %}
+
+{% block content %}
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        color: #ECEFF1;
+        font-family: 'Inter', sans-serif;
+        overflow-x: hidden;
+        min-height: 100vh;
+    }
+
+    .notification-box {
+        background: #1f4068;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        margin: 1rem auto;
+        max-width: 600px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .notification-actions a {
+        margin-right: 10px;
+    }
+</style>
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">🔔 Your Notifications</h2>
+
+    {% if notifications %}
+        {% for note in notifications %}
+                <p>{{note.sender}} wants to claim your item: {{note.item.title}}</p>
+
+                <a href="#" class="btn btn-success">Accept</a>
+                <a href="#" class="btn btn-danger">Reject</a>
+        {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}

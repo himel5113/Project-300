@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 
 # Models
-from .models import Items, UserModel, Backup
+from .models import Items, UserModel, Backup, NotificationModel
 
 
 from django.contrib import messages
@@ -531,6 +531,22 @@ def claim_request(request, item_id):
         fail_silently=False
     )
 
+
+    recipient = publisher.name
+    sender = claimer.name
+    message = f"{sender} wants to claim your item: {item.title}"
+
+    NotificationModel.objects.create(
+        recipient=recipient,
+        recipient_muID=publisher.mu_id,
+        sender=sender,
+        sender_muID=claimer.mu_id,
+        item=item,
+        message=message,
+        type='claim_request'
+    )
+
+
     messages.success(request, 'Claim request sent successfully!')
     return redirect('found_items_view') 
 
@@ -575,5 +591,30 @@ def found_notification(request, item_id):
         fail_silently=False
     )
 
+    recipient = publisher.name
+    sender = finder.name
+    message = f"{sender} wants to claim your item: {item.title}"
+
+    NotificationModel.objects.create(
+        recipient=recipient,
+        recipient_muID=publisher.mu_id,
+        sender=sender,
+        sender_muID=finder.mu_id,
+        item=item,
+        message=message,
+        type='found_notification'
+    )
+
     messages.success(request, 'Found notification sent successfully!')
     return redirect('lost_items_view')
+
+
+
+# Notification view
+def notification_view(request):
+    user_id = request.session.get('user_id')
+    user = UserModel.objects.get(id=user_id) if user_id else None
+    # print(f'User ID: {user.mu_id}')  # Debugging line
+    # print(f'User ID: {user.mu_id}')  # Debugging line
+    notifications = NotificationModel.objects.filter(recipient_muID=user.mu_id)
+    return render(request, 'app/basic/notification.html', {'notifications': notifications})

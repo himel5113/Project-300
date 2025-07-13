@@ -81,3 +81,34 @@ class Backup(models.Model):
     original_location = models.CharField(max_length=100)
     deleted_at = models.DateTimeField(auto_now_add=True)
 
+
+
+
+# Notification Model:
+class NotificationModel(models.Model):
+
+    types = [
+        ('default', 'default'),
+        ('claim_request', 'claim_request'),
+        ('found_notification', 'found_notification'),
+    ]
+
+
+    statusChoice = [
+        ('Pending', 'Pending'),
+        ('Accept', 'Accept'),
+        ('Reject', 'Reject'),
+    ]
+
+    recipient = models.CharField(max_length=50, null=True, blank=True)
+    recipient_muID = models.CharField(max_length=11, null=True, blank=True)
+    sender = models.CharField(max_length=50, null=True, blank=True)
+    sender_muID = models.CharField(max_length=11, null=True, blank=True)
+    item = models.ForeignKey(Items, on_delete=models.CASCADE)
+    message = models.TextField()
+    type = models.CharField(choices=types, default='default')
+    status = models.CharField(choices=statusChoice, default='Pending')
+
+    def __str__(self):
+        return f'Notification for {self.item.title}'
+
