@@ -22,6 +22,7 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.core.mail import send_mail
 from django.conf import settings
 import textwrap
+from django.db.models import Q
 
 
 # Create your views here.
@@ -624,8 +625,17 @@ def notification_view(request):
 # accept request
 
 @require_http_methods(["GET"])
-def accept_request(request, item_id):
-    item = get_object_or_404(Items, id = item_id)
+def accept_request(request, notification_id, item_id):
+
+    item = get_object_or_404(Items, id=item_id)
+    sender = get_object_or_404(UserModel, id=request.session.get('user_id'))
+    reciever = get_object_or_404(UserModel, mu_id=item.publisherId)
+
+    notification = NotificationModel.objects.get(
+        Q(id=notification_id) & (Q(status='Pending') | Q(status='Reject'))
+    )
+
+
     
     # Abstract (only for admin)
     backup = Backup.objects.create(
@@ -638,14 +648,14 @@ def accept_request(request, item_id):
         original_title=item.title,
         original_description=item.description,
         original_location=item.location,
+        recipient=reciever.name,
+        recipient_muID=reciever.mu_id,
+        sender=sender.name,
+        sender_muID=sender.mu_id
     )
     backup.save()
     
-    notification = NotificationModel.objects.get(
-        item = item,
-        recipient_muID=item.publisherId,
-        status = 'Pending'
-    )
+    
 
     notification.status = 'Accept'
     notification.save()
@@ -658,4 +668,21 @@ def accept_request(request, item_id):
     return redirect('notification_view')
 
 
-# reject request
+
+# reject reqiest
+@require_http_methods(["GET"])
+def reject_request(request, notification_id, item_id):
+    item = get_object_or_404(Items, id=item_id)
+    sender = get_object_or_404(UserModel, id=request.session.get('user_id'))
+    reciever = get_object_or_404(UserModel, mu_id=item.publisherId)
+
+    notification = NotificationModel.objects.get(
+        Q(id=notification_id) & (Q(status='Pending') | Q(status='Reject'))
+    )
+
+
+    notification.status='Reject'
+    notification.save()
+
+    messages.success(request, 'Request Rejected. If any query please contact to the admin.')
+    return redirect('notification_view')

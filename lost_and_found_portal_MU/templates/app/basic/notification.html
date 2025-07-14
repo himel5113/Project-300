@@ -35,11 +35,13 @@
 
     {% if notifications %}
         {% for note in notifications %}
-                {% if note.item %}
-                <p>{{note.sender}} wants to claim your item: {{note.item.title}}</p>
+                {% if note.status == 'Pending' %}
+                    {% if note.item %}
+                        <p>{{note.sender}} wants to claim your item: {{note.item.title}}</p>
 
-                <a href="{% url 'accept_request' note.item.id %}" class="btn btn-success">Accept</a>
-                <a href="{% url 'home' %}" class="btn btn-danger">Reject</a>
+                        <a href="{% url 'accept_request' note.id note.item.id %}" class="btn btn-success">Accept</a>
+                        <a href="{% url 'reject_request' note.id note.item.id %}" class="btn btn-danger">Reject</a>
+                    {% endif %}
                 {% endif %}
         {% endfor %}
     {% endif %}

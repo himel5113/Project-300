@@ -81,6 +81,11 @@ class Backup(models.Model):
     original_location = models.CharField(max_length=100)
     deleted_at = models.DateTimeField(auto_now_add=True)
 
+    recipient = models.CharField(max_length=50, null=True, blank=True)
+    recipient_muID = models.CharField(max_length=11, null=True, blank=True)
+    sender = models.CharField(max_length=50, null=True, blank=True)
+    sender_muID = models.CharField(max_length=11, null=True, blank=True)
+
 
 
 
