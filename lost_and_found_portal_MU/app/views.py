@@ -413,6 +413,21 @@ def create_post(request):
             item.publisherUserName = user.username
 
             item.save()
+
+            all_users = UserModel.objects.exclude(id=user.id)
+            for u in all_users:
+                NotificationModel.objects.create(
+                    recipient=u.name,
+                    recipient_muID=u.mu_id,
+                    sender=user.name,
+                    sender_muID=user.mu_id,
+                    item=item,
+                    type='default',
+                    status='Pending',
+                    is_read=False
+                )
+
+
             messages.success(request, 'Successfuly Posted!')
             if item.type == 'Found':
                 return redirect('found_items_view')
@@ -535,7 +550,6 @@ def claim_request(request, item_id):
 
     recipient = publisher.name
     sender = claimer.name
-    message = f"{sender} wants to claim your item: {item.title}"
 
     NotificationModel.objects.create(
         recipient=recipient,
@@ -543,8 +557,8 @@ def claim_request(request, item_id):
         sender=sender,
         sender_muID=claimer.mu_id,
         item=item,
-        message=message,
-        type='claim_request'
+        type='claim_request',
+        is_read=False
     )
 
 
@@ -594,7 +608,6 @@ def found_notification(request, item_id):
 
     recipient = publisher.name
     sender = finder.name
-    message = f"{sender} wants to claim your item: {item.title}"
 
     NotificationModel.objects.create(
         recipient=recipient,
@@ -602,8 +615,8 @@ def found_notification(request, item_id):
         sender=sender,
         sender_muID=finder.mu_id,
         item=item,
-        message=message,
-        type='found_notification'
+        type='found_notification',
+        is_read=False
     )
 
     messages.success(request, 'Found notification sent successfully!')
@@ -658,6 +671,7 @@ def accept_request(request, notification_id, item_id):
     
 
     notification.status = 'Accept'
+    notification.is_read = True
     notification.save()
 
 
@@ -682,7 +696,20 @@ def reject_request(request, notification_id, item_id):
 
 
     notification.status='Reject'
+    notification.is_read = True
     notification.save()
 
     messages.success(request, 'Request Rejected. If any query please contact to the admin.')
+    return redirect('notification_view')
+
+
+
+# clear notification
+def clear_all(request):
+    user_id = request.session.get('user_id')
+    user = UserModel.objects.get(id=user_id)
+
+    NotificationModel.objects.filter(recipient_muID=user.mu_id, status='Pending').update(is_read=True)
+
+    messages.success(request, "All notifications cleared.")
     return redirect('notification_view')

@@ -22,4 +22,5 @@ urlpatterns = [
     path('notifications/', views.notification_view, name='notification_view'),
     path('accept_request/<int:notification_id>/<int:item_id>', views.accept_request, name='accept_request'),
     path('reject_request/<int:notification_id>/<int:item_id>', views.reject_request, name='reject_request'),
+    path('clear_all/', views.clear_all, name='clear_all'),
 ]    

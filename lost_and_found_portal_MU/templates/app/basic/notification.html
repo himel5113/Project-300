@@ -31,19 +31,54 @@
 </style>
 
 <div class="container mt-5">
-    <h2 class="text-center mb-4">🔔 Your Notifications</h2>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>🔔 Your Notifications</h2>
+        <a href="{% url 'clear_all' %}" class="btn btn-sm btn-danger">Clear All</a>
+    </div>
 
     {% if notifications %}
         {% for note in notifications %}
-                {% if note.status == 'Pending' %}
-                    {% if note.item %}
-                        <p>{{note.sender}} wants to claim your item: {{note.item.title}}</p>
+            {% if not note.is_read and note.status == 'Pending' %}
 
-                        <a href="{% url 'accept_request' note.id note.item.id %}" class="btn btn-success">Accept</a>
-                        <a href="{% url 'reject_request' note.id note.item.id %}" class="btn btn-danger">Reject</a>
+                    {% if note.item %}
+                        {% if note.type == 'claim_request' %}
+                            <p>
+                                <strong>{{ note.sender }}</strong> wants to claim your item:
+                                <a href="{% url 'found_items_view' %}">{{ note.item.title }}</a>
+                            </p>
+                            <div class="notification-actions">
+                                <a href="{% url 'accept_request' note.id note.item.id %}" class="btn btn-success btn-sm">Accept</a>
+                                <a href="{% url 'reject_request' note.id note.item.id %}" class="btn btn-danger btn-sm">Reject</a>
+                            </div>
+
+                        {% elif note.type == 'found_notification' %}
+                            <p>
+                                <strong>{{ note.sender }}</strong> found your item:
+                                <a href="{% url 'lost_items_view' %}">{{ note.item.title }}</a>
+                            </p>
+                            <div class="notification-actions">
+                                <a href="{% url 'accept_request' note.id note.item.id %}" class="btn btn-success btn-sm">Accept</a>
+                                <a href="{% url 'reject_request' note.id note.item.id %}" class="btn btn-danger btn-sm">Reject</a>
+                            </div>
+
+                        {% else %}
+                            <p>
+                                <strong>{{ note.sender }}</strong> posted a new item:
+                                {% if note.item.type == 'Found' %}
+                                    <a href="{% url 'found_items_view' %}">{{ note.item.title }}</a>
+                                {% else %}
+                                    <a href="{% url 'lost_items_view' %}">{{ note.item.title }}</a>
+                                {% endif %}
+                            </p>
+                        {% endif %}
+                    {% else %}
+                        <p><strong>{{ note.sender }}</strong> posted a new item.</p>
                     {% endif %}
-                {% endif %}
+            {% endif %}
         {% endfor %}
+    {% else %}
+        <p class="text-center mt-4">You have no notifications.</p>
     {% endif %}
 </div>
+
 {% endblock %}
