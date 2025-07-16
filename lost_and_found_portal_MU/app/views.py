@@ -92,8 +92,8 @@ def signup(request):
 
             user.save(update_fields=['username'])
 
-            messages.success(request, 'Account created successfully!')
-            return redirect('home')
+            return redirect('signin')  # or use the actual URL name or path
+
         else:
             messages.error(request, 'Invalid Credentials. Try Again.')
     else:
