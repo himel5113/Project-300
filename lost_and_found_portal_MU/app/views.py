@@ -92,8 +92,8 @@ def signup(request):
 
             user.save(update_fields=['username'])
 
-            messages.success(request, 'Account created successfully!')
-            return redirect('home')
+            return redirect('signin')  # or use the actual URL name or path
+
         else:
             messages.error(request, 'Invalid Credentials. Try Again.')
     else:
@@ -137,14 +137,14 @@ def logout_(request):
 
 # Profile view
 # Development Phase
-def profile_view(request):
-    user_id = request.session.get('user_id')
-    if not user_id:
-        messages.error(request, 'Please Login first.')
-        return redirect('signin')
+# def profile_view(request):
+#     user_id = request.session.get('user_id')
+#     if not user_id:
+#         messages.error(request, 'Please Login first.')
+#         return redirect('signin')
 
-    user = UserModel.objects.get(id=user_id)
-    return render(request, 'app/user/profile.html', {'user' : user})
+#     user = UserModel.objects.get(id=user_id)
+#     return render(request, 'app/user/profile.html', {'user' : user})
 
 
 
@@ -713,3 +713,81 @@ def clear_all(request):
 
     messages.success(request, "All notifications cleared.")
     return redirect('notification_view')
+
+
+# Edit Profile View
+# @login_required
+from django.db.models import Count
+from django.contrib import messages
+from .models import UserModel, Items
+
+def profile_view(request):
+    user_id = request.session.get('user_id')
+    if not user_id:
+        messages.error(request, 'Please login first.')
+        return redirect('signin')
+
+    user = get_object_or_404(UserModel, id=user_id)
+
+    # Count active lost items posted by user
+    lost_items_count = Items.objects.filter(publisherId=user.mu_id, type='Lost').count()
+
+    # Count active found items posted by user
+    found_items_count = Items.objects.filter(publisherId=user.mu_id, type='Found').count()
+
+    # Calculate recovered lost items (lost items that have a matching found item with same title)
+    lost_items = Items.objects.filter(publisherId=user.mu_id, type='Lost')
+    recovered_count = 0
+    for lost_item in lost_items:
+        # Check if a found item exists with the same title (case-insensitive)
+        if Items.objects.filter(type='Found', title__iexact=lost_item.title).exists():
+            recovered_count += 1
+
+    # Fetch recent posts (lost or found items) by this user ordered by creation date descending
+    recent_posts = Items.objects.filter(publisherId=user.mu_id).order_by('-created_at')[:5]
+
+    context = {
+        'user': user,
+        'lost_items_count': lost_items_count,
+        'found_items_count': found_items_count,
+        'recovered_count': recovered_count,
+        'recent_posts': recent_posts,  # pass recent activity here
+    }
+
+    return render(request, 'app/user/profile.html', context)
+
+
+
+def edit_profile_view(request):
+    user_id = request.session.get('user_id')
+    if not user_id:
+        messages.error(request, 'Please login first.')
+        return redirect('signin')
+
+    user = get_object_or_404(UserModel, id=user_id)
+
+    if request.method == 'POST':
+        # Get form data
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        location = request.POST.get('location')
+        bio = request.POST.get('bio')
+        profile_img = request.FILES.get('profileImg')
+
+        # Optional: Add validation here for required fields
+
+        # Update user fields
+        user.name = name
+        user.email = email
+        user.location = location
+        user.bio = bio
+
+        if profile_img:
+            user.profileImg = profile_img  # Make sure field name is correct in your model
+
+        user.save()
+        messages.success(request, 'Profile updated successfully!')
+        return redirect('profile_view')  # redirect to /user-profile/
+
+    # GET request - prefill form with current user data
+    return render(request, 'app/user/edit_profile.html', {'user': user})

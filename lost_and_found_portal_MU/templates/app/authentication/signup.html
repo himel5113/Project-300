@@ -3,79 +3,706 @@
 
 {% block content %}
 
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-    html,
-    body {
+    * {
         margin: 0;
         padding: 0;
-        height: 100vh;
-        background: url('{% static "../media/uploads/signupbg.jpg" %}') center/cover no-repeat;
-        text-align: center;
+        box-sizing: border-box;
     }
 
-    .signup-container {
-        max-width: 600px;
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #0f0f23 0%, #2a276d 25%, #1a1a2e 50%, #16213e 75%, #0f0f23 100%);
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    /* Animated Background Elements */
+    .bg-animation {
+        position: fixed;
+        top: 0;
+        left: 0;
         width: 100%;
-        margin: auto;
-        background: rgba(255, 255, 255, 0.85);
-        border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        padding: 2rem;
+        height: 100%;
+        z-index: 1;
+        pointer-events: none;
     }
 
-    .signup-row {
+    .floating-shape {
+        position: absolute;
+        background: linear-gradient(45deg, rgba(42, 39, 109, 0.1), rgba(91, 33, 182, 0.1));
+        border-radius: 50%;
+        animation: float 20s infinite ease-in-out;
+    }
+
+    .floating-shape:nth-child(1) {
+        width: 100px;
+        height: 100px;
+        top: 10%;
+        left: 10%;
+        animation-delay: 0s;
+    }
+
+    .floating-shape:nth-child(2) {
+        width: 150px;
+        height: 150px;
+        top: 60%;
+        right: 10%;
+        animation-delay: 5s;
+    }
+
+    .floating-shape:nth-child(3) {
+        width: 80px;
+        height: 80px;
+        bottom: 20%;
+        left: 20%;
+        animation-delay: 10s;
+    }
+
+    .floating-shape:nth-child(4) {
+        width: 120px;
+        height: 120px;
+        top: 30%;
+        right: 30%;
+        animation-delay: 15s;
+    }
+
+    @keyframes float {
+
+        0%,
+        100% {
+            transform: translateY(0px) scale(1);
+        }
+
+        25% {
+            transform: translateY(-20px) scale(1.1);
+        }
+
+        50% {
+            transform: translateY(10px) scale(0.9);
+        }
+
+        75% {
+            transform: translateY(-15px) scale(1.05);
+        }
+    }
+
+    /* Main Container */
+    .main-container {
+        position: relative;
+        z-index: 2;
+        min-height: 100vh;
         display: flex;
-        gap: 1rem;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+    }
+
+    /* Design Option 1: Split Screen */
+    .split-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        max-width: 1200px;
+        width: 100%;
+        min-height: 600px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 24px;
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 32px 64px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+    }
+
+    .welcome-section {
+        background: linear-gradient(135deg, #2a276d 0%, #5b21b6 100%);
+        padding: 4rem 3rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        color: white;
+        position: relative;
+    }
+
+    .welcome-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        opacity: 0.3;
+    }
+
+    .welcome-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .brand-logo {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        background: linear-gradient(90deg, #ffffff, #e0e7ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .welcome-title {
+        font-size: 2rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+
+    .welcome-subtitle {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+    }
+
+    .feature-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        font-size: 0.95rem;
+        opacity: 0.9;
+    }
+
+    .feature-icon {
+        width: 20px;
+        height: 20px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+    }
+
+    .form-section {
+        padding: 4rem 3rem;
+        background: rgba(255, 255, 255, 0.98);
+        display: flex;
+        flex-direction: column;
         justify-content: center;
     }
 
-    .signup-row div {
-        flex: 1;
+    .form-header {
+        text-align: center;
+        margin-bottom: 2rem;
     }
 
-    .signup-container input,
-    .signup-container select {
+    .form-title {
+        font-size: 1.875rem;
+        font-weight: 700;
+        color: #2a276d;
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.025em;
+    }
+
+    .form-subtitle {
+        color: #6b7280;
+        font-size: 1rem;
+    }
+
+    /* Enhanced Form Styling */
+    .form-group {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+        letter-spacing: 0.025em;
+    }
+
+    .form-input,
+    .form-select {
         width: 100%;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        border: 1px solid #ccc;
+        padding: 0.85rem 1rem;
+        border: 1.5px solid #d1d5db;
+        border-radius: 10px;
+        background-color: #f9fafb;
+        color: #111827;
+        font-size: 1rem;
+        font-weight: 500;
+        transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+
+    .form-input:focus,
+    .form-select:focus {
+        border-color: #5b21b6;
+        outline: none;
+        background-color: #ffffff;
+        box-shadow: 0 0 0 4px rgba(91, 33, 182, 0.1);
+    }
+
+    .form-input::placeholder {
+        color: #9ca3af;
+        font-weight: 400;
+    }
+
+    .form-select {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 1.5em 1.5em;
+        padding-right: 3rem;
+        appearance: none;
+    }
+
+    /* Optional: Add hover style */
+    .form-input:hover,
+    .form-select:hover {
+        border-color: #a78bfa;
+        background-color: #f3f4f6;
+    }
+
+
+
+    /* Image Upload Styling */
+    .image-upload-container {
+        margin-bottom: 1.5rem;
+    }
+
+    .image-upload-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        width: 100%;
+        padding: 1.5rem;
+        border: 2px dashed #d1d5db;
         border-radius: 8px;
+        background: #f9fafb;
+        color: #6b7280;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        position: relative;
+        overflow: hidden;
     }
 
-    .signup-container button {
+    .image-upload-btn:hover {
+        border-color: #2a276d;
+        background: #f3f4f6;
+        color: #2a276d;
+    }
+
+    .image-upload-btn.has-image {
+        border-color: #10b981;
+        background: #ecfdf5;
+        color: #065f46;
+    }
+
+    .upload-icon {
+        width: 20px;
+        height: 20px;
+        stroke: currentColor;
+        fill: none;
+    }
+
+    .image-upload-input {
+        position: absolute;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+    }
+
+    .image-preview-container {
+        margin-top: 1rem;
+        padding: 1rem;
+        background: #f9fafb;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+        display: none;
+    }
+
+    .image-preview-container.show {
+        display: block;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .image-preview {
+        width: 100%;
+        max-width: 200px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 2px solid #e5e7eb;
+        margin-bottom: 0.75rem;
+    }
+
+    .image-info {
+        font-size: 0.75rem;
+        color: #6b7280;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .remove-image-btn {
+        background: #fef2f2;
+        color: #dc2626;
+        border: 1px solid #fecaca;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        float: right;
+        transition: all 0.2s ease;
+    }
+
+    .remove-image-btn:hover {
+        background: #fee2e2;
+    }
+
+    .submit-btn {
         width: 100%;
         padding: 1rem;
-        background: linear-gradient(90deg, #3b82f6, #6366f1);
-        color: #fff;
+        background: linear-gradient(135deg, #2a276d 0%, #5b21b6 100%);
+        color: white;
         border: none;
         border-radius: 8px;
-        font-weight: 700;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin-top: 1rem;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(42, 39, 109, 0.4);
+    }
+
+    .login-link {
+        text-align: center;
+        margin-top: 1.5rem;
+        color: #6b7280;
+        font-size: 0.875rem;
+    }
+
+    .login-link a {
+        color: #2a276d;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .login-link a:hover {
+        text-decoration: underline;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .split-layout {
+            grid-template-columns: 1fr;
+            max-width: 500px;
+        }
+
+        .welcome-section {
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .brand-logo {
+            font-size: 2rem;
+        }
+
+        .welcome-title {
+            font-size: 1.5rem;
+        }
+
+        .form-section {
+            padding: 2rem;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .floating-shape {
+            display: none;
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 </style>
 
-<h2 class="signup-header">Create Your Account</h2>
-<div class="signup-container">
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="signup-row">
-            <div>{{ form.name.label_tag }}<br>{{ form.name }}</div>
-            <div>{{ form.phone.label_tag }}<br>{{ form.phone }}</div>
-        </div>
-        {% for field in form %}
-        {% if field.name != 'name' and field.name != 'phone' %}
-        <div>
-            {{ field.label_tag }}<br>
-            {{ field }}
-            {% if field.errors %}
-            <small style="color: red;">{{ field.errors|striptags }}</small>
-            {% endif %}
-        </div>
-        {% endif %}
-        {% endfor %}
-        <button type="submit">Sign Up</button>
-        <p style="margin-top:1rem;">Already have an account? <a href="{% url 'signin' %}">Login now</a>.</p>
-    </form>
+<div class="bg-animation">
+    <div class="floating-shape"></div>
+    <div class="floating-shape"></div>
+    <div class="floating-shape"></div>
+    <div class="floating-shape"></div>
 </div>
+
+<div class="main-container">
+    <div class="split-layout">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <div class="welcome-content">
+                <div class="brand-logo">📋 Lost & Found</div>
+                <h1 class="welcome-title">Join Our Community</h1>
+                <p class="welcome-subtitle">
+                    Connect with others to find and return lost items.
+                    Create your account and start making a difference in your community.
+                </p>
+                <ul class="feature-list">
+                    <li class="feature-item">
+                        <div class="feature-icon">🔍</div>
+                        <span>Search for lost items</span>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon">📱</div>
+                        <span>Post found items</span>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon">🤝</div>
+                        <span>Connect with others</span>
+                    </li>
+                    <li class="feature-item">
+                        <div class="feature-icon">🏆</div>
+                        <span>Build your reputation</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Form Section -->
+        <div class="form-section">
+            <div class="form-header">
+                <h2 class="form-title">Create Account</h2>
+                <p class="form-subtitle">Fill in your details to get started</p>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data" id="signupForm">
+                {% csrf_token %}
+
+                <!-- Name + Phone already correctly rendered -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">{{ form.name.label }}</label>
+                        {{ form.name }}
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">{{ form.phone.label }}</label>
+                        {{ form.phone }}
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label class="form-label">{{ form.email.label }}</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                    <small style="color: #dc2626;">{{ form.email.errors|striptags }}</small>
+                    {% endif %}
+                </div>
+
+                <!-- MU ID -->
+                <div class="form-group">
+                    <label class="form-label">{{ form.mu_id.label }}</label>
+                    {{ form.mu_id }}
+                    {% if form.mu_id.errors %}
+                    <small style="color: #dc2626;">{{ form.mu_id.errors|striptags }}</small>
+                    {% endif %}
+                </div>
+
+                <!-- Department -->
+                <div class="form-group">
+                    <label class="form-label">{{ form.dept.label }}</label>
+                    {{ form.dept }}
+                    {% if form.dept.errors %}
+                    <small style="color: #dc2626;">{{ form.dept.errors|striptags }}</small>
+                    {% endif %}
+                </div>
+
+                <!-- Password1 -->
+                <div class="form-group">
+                    <label class="form-label">{{ form.password1.label }}</label>
+                    {{ form.password1 }}
+                    {% if form.password1.errors %}
+                    <small style="color: #dc2626;">{{ form.password1.errors|striptags }}</small>
+                    {% endif %}
+                </div>
+
+                <!-- Password2 -->
+                <div class="form-group">
+                    <label class="form-label">{{ form.password2.label }}</label>
+                    {{ form.password2 }}
+                    {% if form.password2.errors %}
+                    <small style="color: #dc2626;">{{ form.password2.errors|striptags }}</small>
+                    {% endif %}
+                </div>
+
+                <!-- Profile Image Upload (unchanged logic) -->
+                {% if form.profileImg %}
+                <div class="form-group">
+                    <label class="form-label">{{ form.profileImg.label }}</label>
+                    <div class="image-upload-container">
+                        <label class="image-upload-btn" id="imageUploadBtn" for="{{ form.profileImg.id_for_label }}">
+                            <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="17,8 12,3 7,8" />
+                                <line x1="12" y1="3" x2="12" y2="15" />
+                            </svg>
+                            <div class="upload-text">
+                                <span class="upload-text-main">Choose Profile Image</span>
+                                <span class="upload-text-sub">PNG, JPG, GIF up to 10MB</span>
+                            </div>
+                            {{ form.profileImg }}
+                        </label>
+                        <div class="loading-overlay" id="loadingOverlay">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                    <div class="image-preview-container" id="imagePreviewContainer">
+                        <div class="image-preview-header">
+                            <span class="image-preview-title">Profile Image Preview</span>
+                            <button type="button" class="remove-image-btn" id="removeImageBtn">Remove</button>
+                        </div>
+                        <img class="image-preview" id="imagePreview" alt="Profile Preview">
+                        <div class="image-info" id="imageInfo">
+                            <div class="image-info-item"><span class="image-info-label">File Name:</span><span
+                                    class="image-info-value" id="fileName">-</span></div>
+                            <div class="image-info-item"><span class="image-info-label">File Size:</span><span
+                                    class="image-info-value" id="fileSize">-</span></div>
+                            <div class="image-info-item"><span class="image-info-label">Dimensions:</span><span
+                                    class="image-info-value" id="imageDimensions">-</span></div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Submit Button -->
+                <button type="submit" class="submit-btn">Create Account</button>
+
+                <div class="login-link">
+                    Already have an account? <a href="{% url 'signin' %}">Sign in here</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const imageInput = document.querySelector('input[type="file"]');
+        const imageUploadBtn = document.getElementById('imageUploadBtn');
+        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+        const imagePreview = document.getElementById('imagePreview');
+        const removeImageBtn = document.getElementById('removeImageBtn');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const imageDimensions = document.getElementById('imageDimensions');
+
+        if (imageInput) {
+            imageInput.classList.add('image-upload-input');
+            imageInput.addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    loadingOverlay.classList.add('show');
+                    if (!file.type.startsWith('image/')) {
+                        alert('Please select a valid image file.');
+                        resetImageUpload();
+                        return;
+                    }
+                    if (file.size > 10 * 1024 * 1024) {
+                        alert('File size must be less than 10MB.');
+                        resetImageUpload();
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        imagePreview.src = e.target.result;
+                        const img = new Image();
+                        img.onload = function () {
+                            fileName.textContent = file.name;
+                            fileSize.textContent = formatFileSize(file.size);
+                            imageDimensions.textContent = `${this.width} × ${this.height}px`;
+                            imagePreviewContainer.classList.add('show');
+                            imageUploadBtn.classList.add('has-image');
+                            imageUploadBtn.querySelector('.upload-text-main').textContent = 'Image Selected';
+                            imageUploadBtn.querySelector('.upload-text-sub').textContent = 'Click to change image';
+                            loadingOverlay.classList.remove('show');
+                        };
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    resetImageUpload();
+                }
+            });
+            removeImageBtn.addEventListener('click', function () {
+                imageInput.value = '';
+                resetImageUpload();
+            });
+        }
+
+        function resetImageUpload() {
+            imagePreviewContainer.classList.remove('show');
+            imageUploadBtn.classList.remove('has-image');
+            loadingOverlay.classList.remove('show');
+            imageUploadBtn.querySelector('.upload-text-main').textContent = 'Choose Profile Image';
+            imageUploadBtn.querySelector('.upload-text-sub').textContent = 'PNG, JPG, GIF up to 10MB';
+            imagePreview.src = '';
+            fileName.textContent = '-';
+            fileSize.textContent = '-';
+            imageDimensions.textContent = '-';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        document.getElementById('signupForm').addEventListener('submit', function () {
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.style.opacity = '0.7';
+            submitBtn.style.pointerEvents = 'none';
+            submitBtn.textContent = 'Creating Account...';
+        });
+    });
+</script>
+
 
 {% endblock %}

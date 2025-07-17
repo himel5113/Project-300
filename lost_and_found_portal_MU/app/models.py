@@ -28,7 +28,12 @@ class UserModel(models.Model):
     mu_id = models.CharField(max_length=11, null=True, blank=True)
     dept = models.CharField(choices=deptChoice, default='Select Department')
     created_at = models.DateTimeField(auto_now_add=True)
-    profileImg = models.ImageField(upload_to='profileImg/', null=True, blank=True)
+    profileImg = models.ImageField(
+        upload_to='profile_images/',
+        default='profileImg\default-profile.jpg',  # path inside your media folder
+        blank=True,
+        null=True
+    )
     # is_valid = models.BooleanField(default=False)   
 
     
@@ -50,7 +55,12 @@ class Items(models.Model):
     publisherUserName = models.CharField(max_length=50, null=True, blank=True)
     publisherName = models.CharField(max_length=50, null=True, blank=True)
     type = models.CharField(choices=itemsType, default='Select post type')
-    image = models.ImageField(upload_to=images, null=True, blank=True)
+    image = models.ImageField(
+        upload_to='uploads/',              # saves uploaded images to media/uploads/
+        default='uploads/default-item.jpg',  # default image path relative to MEDIA_ROOT
+        blank=True,
+        null=True
+    )
     title = models.CharField(max_length=100)
     description = models.TextField()
     location = models.CharField(max_length=100)

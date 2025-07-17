@@ -47,7 +47,8 @@
 
 
         <!-- Notifications Icon -->
-        <a href="{% url 'notification_view' %}" title="View Notifications" class="position-relative me-3" style="color: #b2dfdb;">
+        <a href="{% url 'notification_view' %}" title="View Notifications" class="position-relative me-3"
+          style="color: #b2dfdb;">
           <i class="bi bi-bell"></i>
         </a>
 
@@ -58,14 +59,15 @@
           <i class="fas fa-sign-out-alt me-1"></i>Logout
         </a>
         {% else %}
-        <a href="{% url 'signin' %}" class="btn btn-outline-light btn-sm px-4 py-2 me-lg-2"
-          style="border-radius: 25px; font-weight: 500; transition: all 0.3s ease; border: 2px solid #4caf50; color: #4caf50;">
+        <a href="{% url 'signin' %}" class="btn btn-signin btn-sm px-4 py-2 me-lg-2"
+          style="border-radius: 25px; font-weight: 600; transition: all 0.3s ease;">
           <i class="fas fa-sign-in-alt me-1"></i>Sign In
         </a>
-        <a href="{% url 'signup' %}" class="btn btn-light btn-sm px-4 py-2"
-          style="border-radius: 25px; font-weight: 500; transition: all 0.3s ease; background: #ffffff; color: #2d5a5b;">
+        <a href="{% url 'signup' %}" class="btn btn-signup btn-sm px-4 py-2"
+          style="border-radius: 25px; font-weight: 600; transition: all 0.3s ease;">
           <i class="fas fa-user-plus me-1"></i>Sign Up
         </a>
+
         {% endif %}
       </div>
     </div>
@@ -74,65 +76,67 @@
 
 <!-- Add this CSS for enhanced styling and hover effects -->
 <style>
-  /* Enhanced Navbar Styling */
-  .navbar .nav-link:hover {
-    background: rgba(255, 255, 255, 0.2) !important;
-    transform: translateY(-1px);
-    color: #ffffff !important;
+  /* Subtle Sign In Button - Soft Glass */
+  .btn-signin {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 2px solid rgba(255, 255, 255, 0.25) !important;
+    color: #2a276d !important;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.08);
+    transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    border-radius: 25px;
   }
 
-  .navbar .nav-link.active {
-    background: rgba(255, 255, 255, 0.25) !important;
-    color: #ffffff !important;
+  .btn-signin:hover,
+  .btn-signin:focus {
+    background: rgba(255, 255, 255, 1) !important;
+    border-color: rgba(255, 255, 255, 0.45) !important;
+    color: #1f1c5c !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(255, 255, 255, 0.15);
+    outline: none;
   }
 
-  .navbar .btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  /* Subtle Sign Up Button - Warm pastel */
+  .btn-signup {
+    background: #f8d7da !important;
+    /* soft pastel pink */
+    border: 2px solid #f5c2c7 !important;
+    /* light coral border */
+    color: #842029 !important;
+    /* dark red text */
+    box-shadow: none;
+    transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    border-radius: 25px;
   }
 
-  .navbar .btn-outline-light:hover {
-    background: rgba(251, 1, 1, 0.9);
-    border-color: rgba(255, 255, 255, 0.9) !important;
-    color: white !important;
+  .btn-signup:hover,
+  .btn-signup:focus {
+    background: #f5c2c7 !important;
+    /* slightly darker pastel */
+    border-color: #d39e9e !important;
+    /* deeper coral border */
+    color: #6a1b1b !important;
+    /* deeper red text */
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(179, 72, 72, 0.3);
+    outline: none;
   }
 
-  /* Mobile Responsiveness */
-  @media (max-width: 991.98px) {
-    .navbar-collapse {
-      background: rgba(0, 0, 0, 0.1);
-      border-radius: 10px;
-      padding: 1rem;
-      margin-top: 1rem;
-    }
-
-    .navbar-nav {
-      text-align: center;
-    }
-
-    .navbar-nav .nav-link {
-      margin: 0.2rem 0;
-    }
-
-    .d-flex.flex-column {
-      margin-top: 1rem;
-      padding-top: 1rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
+  /* Keyboard focus outline */
+  .btn-signin:focus-visible,
+  .btn-signup:focus-visible {
+    outline: 3px solid #a2a1ff;
+    /* subtle blue ring */
+    outline-offset: 3px;
   }
 
-  /* Smooth animations */
-  .navbar-toggler {
+  /* Keep your original responsive styles as is */
+
+  /* Optional: Slight button scale on hover for subtle feedback */
+  .navbar .btn:hover,
+  .navbar .btn:focus {
     transition: all 0.3s ease;
-  }
-
-  .navbar-toggler:hover {
-    background: rgba(255, 255, 255, 0.2) !important;
-    transform: scale(1.05);
-  }
-
-  .navbar-brand:hover {
-    transform: scale(1.05);
-    transition: all 0.3s ease;
+    transform-origin: center bottom;
   }
 </style>
