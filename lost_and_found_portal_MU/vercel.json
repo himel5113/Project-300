@@ -18,13 +18,7 @@
     }
   ],
   "routes": [
-    {
-      "src": "/static/(.*)",
-      "dest": "/static/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "lost_and_found_portal_MU/wsgi.py"
-    }
+    { "src": "/static/(.*)", "dest": "/static/$1" },
+    { "src": "/(.*)", "dest": "lost_and_found_portal_MU/wsgi.py" }
   ]
 }
