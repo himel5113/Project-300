@@ -117,7 +117,7 @@ def signin(request):
                 # messages.success(request, f"Welcome back, {un}!")
 
                 request.session['username'] = user.username
-                messages.success(request, f"Welcome, {user.username}!")
+               
                 return redirect('home')
             else :
                 messages.error(request, 'Invalid email or password.')
@@ -426,9 +426,6 @@ def create_post(request):
                     status='Pending',
                     is_read=False
                 )
-
-
-            messages.success(request, 'Successfuly Posted!')
             if item.type == 'Found':
                 return redirect('found_items_view')
             else:

@@ -5,52 +5,109 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+  /* Include the improved CSS from the previous artifact here */
   body,
   html {
     margin: 0;
     padding: 0;
-    height: 100%;
+    min-height: 100vh;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: url('{% static "../media/uploads/deer image.jpg" %}') center/cover no-repeat;
+    background-attachment: fixed;
+  }
+
+  /* Add overlay to darken background for better readability */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg,
+        rgba(42, 39, 109, 0.3) 0%,
+        rgba(0, 0, 0, 0.4) 50%,
+        rgba(42, 39, 109, 0.3) 100%);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* Ensure content is above overlay */
+  .container {
+    position: relative;
+    z-index: 2;
   }
 
   .login-container {
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(12px);
-    max-width: 400px;
-    margin: 10vh auto;
-    padding: 2.5rem;
-    border-radius: 10px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    max-width: 420px;
+    margin: 8vh auto 3rem;
+    padding: 3rem 2.5rem;
+    border-radius: 20px;
+    box-shadow:
+      0 20px 40px rgba(0, 0, 0, 0.3),
+      0 8px 16px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transition: all 0.4s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
   }
 
   .login-container:hover {
-    transform: translateY(-5px);
+    transform: translateY(-8px);
+    box-shadow:
+      0 32px 64px rgba(0, 0, 0, 0.4),
+      0 16px 32px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
 
   .login-container h2 {
     text-align: center;
-    margin-bottom: 2rem;
-    color: #fff;
-    font-size: 2rem;
+    margin-bottom: 2.5rem;
+    color: #2a276d;
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #2a276d 0%, #5b21b6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   .login-container input[type="email"],
   .login-container input[type="password"] {
     width: 100%;
-    padding: 1rem;
-    margin-bottom: 1.2rem;
-    border: none;
-    border-radius: 4px;
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
     font-size: 1rem;
+    font-weight: 500;
     box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.9);
+    color: #1f2937;
+    transition: all 0.3s ease;
+  }
+
+  .login-container input[type="email"]:focus,
+  .login-container input[type="password"]:focus {
+    outline: none;
+    border-color: #5b21b6;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 0 0 4px rgba(91, 33, 182, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .login-container input[type="email"]::placeholder,
+  .login-container input[type="password"]::placeholder {
+    color: #9ca3af;
+    font-weight: 400;
   }
 
   .remember-me-container {
     display: flex;
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
     gap: 0.75rem;
   }
 
@@ -62,18 +119,19 @@
   .checkbox-wrapper input[type="checkbox"] {
     opacity: 0;
     position: absolute;
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     margin: 0;
     cursor: pointer;
+    z-index: 10;
   }
 
   .checkbox-custom {
-    width: 20px;
-    height: 20px;
-    border: 2px solid rgba(255, 255, 255, 0.6);
-    border-radius: 4px;
-    background: rgba(255, 255, 255, 0.1);
+    width: 22px;
+    height: 22px;
+    border: 2px solid #d1d5db;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.9);
     display: inline-block;
     position: relative;
     cursor: pointer;
@@ -81,15 +139,16 @@
   }
 
   .checkbox-wrapper input[type="checkbox"]:checked+.checkbox-custom {
-    background: #2a276d;
+    background: linear-gradient(135deg, #2a276d 0%, #5b21b6 100%);
     border-color: #2a276d;
+    transform: scale(1.05);
   }
 
   .checkbox-wrapper input[type="checkbox"]:checked+.checkbox-custom::after {
     content: '';
     position: absolute;
-    left: 6px;
-    top: 2px;
+    left: 7px;
+    top: 3px;
     width: 6px;
     height: 10px;
     border: solid white;
@@ -98,61 +157,117 @@
   }
 
   .checkbox-wrapper input[type="checkbox"]:hover+.checkbox-custom {
-    border-color: rgba(255, 255, 255, 0.8);
-    background: rgba(255, 255, 255, 0.2);
+    border-color: #5b21b6;
+    background: rgba(255, 255, 255, 1);
+    transform: scale(1.02);
   }
 
   .checkbox-wrapper input[type="checkbox"]:focus+.checkbox-custom {
-    outline: 2px solid rgba(42, 39, 109, 0.5);
+    outline: 2px solid rgba(91, 33, 182, 0.3);
     outline-offset: 2px;
   }
 
   .remember-me-container label {
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 0.95rem;
-    font-weight: 400;
+    color: #374151;
+    font-size: 1rem;
+    font-weight: 500;
     cursor: pointer;
     user-select: none;
     line-height: 1.2;
   }
 
   .remember-me-container label:hover {
-    color: rgba(255, 255, 255, 1);
+    color: #2a276d;
   }
 
   .login-container button {
     width: 100%;
-    padding: 1rem;
-    background: #6200ea;
+    padding: 1.3rem;
+    background: linear-gradient(135deg, #2a276d 0%, #5b21b6 100%);
     color: #fff;
     border: none;
-    border-radius: 4px;
+    border-radius: 12px;
     text-transform: uppercase;
     font-weight: 700;
+    font-size: 1rem;
     letter-spacing: 1px;
-    transition: background 0.3s, transform 0.3s;
+    transition: all 0.3s ease;
     box-sizing: border-box;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .login-container button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+  }
+
+  .login-container button:hover::before {
+    left: 100%;
   }
 
   .login-container button:hover {
-    background: #3700b3;
-    transform: translateY(-2px);
+    background: linear-gradient(135deg, #1e1b5c 0%, #4c1d95 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgba(42, 39, 109, 0.4);
+  }
+
+  .login-container button:active {
+    transform: translateY(-1px);
   }
 
   .login-container p {
     text-align: center;
-    margin-top: 1rem;
-    color: #ddd;
+    margin-top: 2rem;
+    color: #6b7280;
+    font-size: 1rem;
+    font-weight: 500;
   }
 
   .login-container a {
-    color: #bb86fc;
+    color: #5b21b6;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
   }
 
-  @media (max-width: 600px) {
+  .login-container a:hover {
+    color: #2a276d;
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
     .login-container {
-      margin: 5vh 1rem;
-      padding: 2rem;
+      margin: 5vh 1rem 2rem;
+      padding: 2.5rem 2rem;
+      border-radius: 16px;
+    }
+
+    .login-container h2 {
+      font-size: 1.8rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .login-container {
+      margin: 3vh 1rem 2rem;
+      padding: 2rem 1.5rem;
+    }
+
+    .login-container input[type="email"],
+    .login-container input[type="password"] {
+      padding: 1rem 1.2rem;
+    }
+
+    .login-container button {
+      padding: 1.1rem;
     }
   }
 </style>
@@ -165,14 +280,52 @@
     <input type="password" name="password" placeholder="Password" required />
     <div class="remember-me-container">
       <div class="checkbox-wrapper">
-        <input type="checkbox" name="remember" id="remember">
+        <input type="checkbox" name="remember" id="remember-checkbox">
         <span class="checkbox-custom"></span>
       </div>
-      <label for="remember">Remember me</label>
+      <label for="remember-checkbox">Remember me</label>
     </div>
     <button type="submit">Login</button>
     <p>Don't have an account? <a href="{% url 'signup' %}">Register</a></p>
   </form>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const checkbox = document.getElementById('remember-checkbox');
+    const checkboxCustom = document.querySelector('.checkbox-custom');
+    const label = document.querySelector('label[for="remember-checkbox"]');
+
+    // Make sure clicking the label toggles the checkbox
+    if (label) {
+      label.addEventListener('click', function (e) {
+        e.preventDefault();
+        checkbox.checked = !checkbox.checked;
+        updateCheckboxVisual();
+      });
+    }
+
+    // Make sure clicking the custom checkbox toggles the real checkbox
+    if (checkboxCustom) {
+      checkboxCustom.addEventListener('click', function (e) {
+        e.preventDefault();
+        checkbox.checked = !checkbox.checked;
+        updateCheckboxVisual();
+      });
+    }
+
+    // Update visual state
+    function updateCheckboxVisual() {
+      if (checkbox.checked) {
+        checkboxCustom.classList.add('checked');
+      } else {
+        checkboxCustom.classList.remove('checked');
+      }
+    }
+
+    // Initial state
+    updateCheckboxVisual();
+  });
+</script>
 
 {% endblock %}
