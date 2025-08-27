@@ -20,7 +20,7 @@
     <!--Title-->
     <title>
         {% block title %}
-            FoundIt@MU
+            FindIt@MU - MU Lost & Found Portal
         {% endblock %}
     </title>
 
@@ -41,11 +41,237 @@
 
         <!--Notifications-->
 
-        {% if messages %}
-            {% for message in messages %}
-                {{ message }}
-            {% endfor %}
-        {% endif %}
+        <!-- Enhanced Messages/Notifications -->
+<!-- Enhanced Messages/Notifications -->
+{% if messages %}
+    <div class="notify-container">
+        {% for message in messages %}
+            <div class="alert-notify alert-{{ message.tags|default:'info' }}" role="alert">
+                <div class="notify-content">
+                    <div class="notify-icon">
+                        {% if message.tags == 'success' %}
+                            <i class="fas fa-check-circle"></i>
+                        {% elif message.tags == 'error' or message.tags == 'danger' %}
+                            <i class="fas fa-exclamation-triangle"></i>
+                        {% elif message.tags == 'warning' %}
+                            <i class="fas fa-exclamation-circle"></i>
+                        {% else %}
+                            <i class="fas fa-info-circle"></i>
+                        {% endif %}
+                    </div>
+                    <div class="notify-text">{{ message }}</div>
+                </div>
+                <button class="notify-close" onclick="closeNotify(this)">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="notify-progress"></div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<style>
+    .notify-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        max-width: 400px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        pointer-events: none;
+    }
+
+    .alert-notify {
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(12px);
+        border-radius: 14px;
+        padding: 1rem 1.25rem;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        transform: translateX(120%);
+        opacity: 0;
+        animation: slideIn 0.5s ease-out forwards, slideOut 0.5s ease-in 5.5s forwards;
+        position: relative;
+        overflow: hidden;
+        pointer-events: auto;
+        min-height: 60px;
+        display: flex;
+        align-items: center;
+    }
+
+    .notify-content {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-grow: 1;
+    }
+
+    .notify-icon {
+        font-size: 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .notify-text {
+        font-size: 0.95rem;
+        font-weight: 500;
+        line-height: 1.4;
+        flex-grow: 1;
+        color: #222;
+    }
+
+    .notify-close {
+        background: none;
+        border: none;
+        font-size: 1.1rem;
+        cursor: pointer;
+        padding: 0.25rem;
+        border-radius: 50%;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        opacity: 0.6;
+        flex-shrink: 0;
+        margin-left: 0.5rem;
+    }
+
+    .notify-close:hover {
+        opacity: 1;
+        transform: rotate(90deg);
+        background: rgba(0, 0, 0, 0.08);
+    }
+
+    .notify-progress {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 4px;
+        border-radius: 0 0 16px 16px;
+        animation: progressBar 6s linear forwards;
+    }
+
+    /* Success */
+    .alert-success {
+        border-color: rgba(16, 185, 129, 0.4);
+        color: #065f46;
+    }
+    .alert-success .notify-icon {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+    }
+    .alert-success .notify-progress {
+        background: linear-gradient(90deg, #10b981, #059669);
+    }
+
+    /* Error */
+    .alert-error, .alert-danger {
+        border-color: rgba(239, 68, 68, 0.4);
+        color: #991b1b;
+    }
+    .alert-error .notify-icon,
+    .alert-danger .notify-icon {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        color: white;
+    }
+    .alert-error .notify-progress,
+    .alert-danger .notify-progress {
+        background: linear-gradient(90deg, #ef4444, #dc2626);
+    }
+
+    /* Warning */
+    .alert-warning {
+        border-color: rgba(245, 158, 11, 0.4);
+        color: #92400e;
+    }
+    .alert-warning .notify-icon {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: white;
+    }
+    .alert-warning .notify-progress {
+        background: linear-gradient(90deg, #f59e0b, #d97706);
+    }
+
+    /* Info */
+    .alert-info {
+        border-color: rgba(59, 130, 246, 0.4);
+        color: #1e3a8a;
+    }
+    .alert-info .notify-icon {
+        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        color: white;
+    }
+    .alert-info .notify-progress {
+        background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+    }
+
+    /* Animations */
+    @keyframes slideIn {
+        0% { transform: translateX(120%); opacity: 0; }
+        60% { transform: translateX(-10px); opacity: 1; }
+        100% { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes slideOut {
+        0% { transform: translateX(0); opacity: 1; }
+        100% { transform: translateX(120%); opacity: 0; }
+    }
+
+    @keyframes progressBar {
+        0% { width: 100%; }
+        100% { width: 0%; }
+    }
+
+    /* Hover pause */
+    .alert-notify:hover {
+        animation-play-state: paused;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+        transform: scale(1.02);
+    }
+    .alert-notify:hover .notify-progress {
+        animation-play-state: paused;
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+        .notify-container {
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            max-width: none;
+        }
+    }
+</style>
+
+<script>
+    function closeNotify(element) {
+        const notify = element.closest('.alert-notify');
+        notify.style.animation = 'slideOut 0.3s ease-in forwards';
+        setTimeout(() => notify.remove(), 300);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const notifies = document.querySelectorAll('.alert-notify');
+        notifies.forEach((notify, index) => {
+            setTimeout(() => {
+                if (notify.parentNode) {
+                    notify.style.animation = 'slideOut 0.5s ease-in forwards';
+                    setTimeout(() => notify.remove(), 500);
+                }
+            }, 6000 + (index * 150));
+        });
+    });
+</script>
+
 
 
         {% block content %}
@@ -59,83 +285,83 @@
 
     <!--Footer-->
 
-    <!-- Footer -->
-    <style>
+    <!-- Add Font Awesome CDN in your <head> -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    /* Footer */
-    .footer {
-        background: rgba(0, 0, 0, 0.3);
-        margin-top: 6rem;
-        padding: 3rem 0 2rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
+<style>
+.footer {
+    background: rgba(0, 0, 0, 0.3);
+    margin-top: 6rem;
+    padding: 3rem 0 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
 
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.footer-section h3 {
+    color: #ffffff;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.footer-section p,
+.footer-section a {
+    color: #b3c4d1;
+    text-decoration: none;
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.footer-section a:hover {
+    color: #00bcd4;
+    transition: color 0.3s ease;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: #b3c4d1;
+}
+
+.social-links {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.social-links a {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    color: #ffffff;
+    font-size: 18px;
+    transition: all 0.3s ease;
+}
+
+.social-links a:hover {
+    background: #00bbd429;
+    transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
     .footer-content {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 2rem;
-        margin-bottom: 2rem;
-    }
-
-    .footer-section h3 {
-        color: #ffffff;
-        margin-bottom: 1rem;
-        font-size: 1.2rem;
-        font-weight: 600;
-    }
-
-    .footer-section p,
-    .footer-section a {
-        color: #b3c4d1;
-        text-decoration: none;
-        line-height: 1.6;
-        margin-bottom: 0.5rem;
-        display: block;
-    }
-
-    .footer-section a:hover {
-        color: #00bcd4;
-        transition: color 0.3s ease;
-    }
-
-    .footer-bottom {
+        grid-template-columns: 1fr;
         text-align: center;
-        padding-top: 2rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        color: #b3c4d1;
     }
-
-    .social-links {
-        display: flex;
-        gap: 1rem;
-        margin-top: 1rem;
-    }
-
-    .social-links a {
-        display: inline-block;
-        width: 40px;
-        height: 40px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 50%;
-        text-align: center;
-        line-height: 40px;
-        color: #ffffff;
-        transition: all 0.3s ease;
-    }
-
-    .social-links a:hover {
-        background: #00bcd4;
-        transform: translateY(-2px);
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-
-        .footer-content {
-            grid-template-columns: 1fr;
-            text-align: center;
-        }
-    }
+}
 </style>
 
 <footer class="footer">
@@ -143,13 +369,12 @@
         <div class="footer-content">
             <div class="footer-section">
                 <h3>MU Lost & Found</h3>
-                <p>Connecting the Metropolitan University community through our dedicated lost and found platform.
-                </p>
+                <p>Connecting the Metropolitan University community through our dedicated lost and found platform.</p>
                 <div class="social-links">
-                    <a href="#" title="Facebook">📘</a>
-                    <a href="#" title="Twitter">🐦</a>
-                    <a href="#" title="Instagram">📷</a>
-                    <a href="#" title="LinkedIn">💼</a>
+                    <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
                 </div>
             </div>
 
@@ -157,7 +382,6 @@
                 <h3>Quick Links</h3>
                 <a href="{% url 'home' %}">Home</a>
                 {% if request.session.username %}
-                {% comment %} <a href="{% url 'itemPage' %}">Browse Items</a> {% endcomment %}
                 <a href="{% url 'profile_view' %}">My Profile</a>
                 <a href="{% url 'create_post' %}">Create Post</a>
                 <a href="#">Quick Search</a>
@@ -179,9 +403,9 @@
 
             <div class="footer-section">
                 <h3>Contact Info</h3>
-                <p>📧 lostfound@metrouni.edu.bd</p>
-                <p>📞 +880-1313-050044</p>
-                <p>📍 Metropolitan University<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Bateshwar, Sylhet, 3104</p>
+                <p><i class="fas fa-envelope"></i> lostfound@metrouni.edu.bd</p>
+                <p><i class="fas fa-phone"></i> +880-1313-050044</p>
+                <p><i class="fas fa-map-marker-alt"></i> Metropolitan University<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Bateshwar, Sylhet, 3104</p>
             </div>
         </div>
 
@@ -190,6 +414,7 @@
         </div>
     </div>
 </footer>
+
     
 </body>
 

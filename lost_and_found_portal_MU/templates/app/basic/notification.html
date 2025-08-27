@@ -1,5 +1,7 @@
 {% extends "app/layout.html" %}
 
+{% block title %} Notifications | FindIt@MU {% endblock %}
+
 {% block content %}
 <style>
     * {
@@ -9,76 +11,389 @@
     }
 
     body {
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-        color: #ECEFF1;
-        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #1e1b4b 0%, #312e81 25%, #3730a3 50%, #1e40af 75%, #1e3a8a 100%);
+        color: #f8fafc;
+        font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
         overflow-x: hidden;
         min-height: 100vh;
     }
 
-    .notification-box {
-        background: #1f4068;
-        padding: 1rem 1.5rem;
-        border-radius: 12px;
-        margin: 1rem auto;
-        max-width: 600px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    .notifications-header {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(20px);
+        border-radius: 16px;
+        padding: 2rem;
+        margin: 2rem auto 2rem;
+        max-width: 800px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     }
 
-    .notification-actions a {
-        margin-right: 10px;
+    .notifications-header h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #ffffff;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
     }
+
+    .bell-icon {
+        font-size: 1.8rem;
+        color: #fbbf24;
+        animation: bellRing 2s ease-in-out infinite;
+    }
+
+    @keyframes bellRing {
+        0%, 50%, 100% { transform: rotate(0deg); }
+        10%, 30% { transform: rotate(-10deg); }
+        20% { transform: rotate(10deg); }
+    }
+
+    .clear-all-btn {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        border: none;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    .clear-all-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    }
+
+    .notification-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 1rem;
+    }
+
+    .notification-card {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(16px);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .notification-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+        border-color: rgba(139, 92, 246, 0.3);
+    }
+
+    .notification-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(180deg, #8b5cf6 0%, #a855f7 100%);
+        border-radius: 0 4px 4px 0;
+    }
+
+    .notification-content {
+        margin-left: 1rem;
+    }
+
+    .notification-text {
+        font-size: 1rem;
+        line-height: 1.6;
+        color: #e2e8f0;
+        margin-bottom: 1rem;
+    }
+
+    .notification-text strong {
+        color: #ffffff;
+        font-weight: 600;
+    }
+
+    .item-link {
+        color: #a8ffffff;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        border-bottom: 1px solid transparent;
+    }
+
+    .item-link:hover {
+        color: #c084fc;
+        border-bottom-color: #c084fc;
+    }
+
+    .notification-actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+    }
+
+    .action-btn {
+        padding: 0.6rem 1.25rem;
+        border-radius: 10px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-accept {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-accept:hover {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        color: white;
+    }
+
+    .btn-reject {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-reject:hover {
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+        color: white;
+    }
+
+    .notification-type {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        color: #cbd5e1;
+        margin-bottom: 0.5rem;
+    }
+
+    .type-icon {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+    }
+
+    .type-claim {
+        background: #3b82f6;
+        color: white;
+    }
+
+    .type-found {
+        background: #10b981;
+        color: white;
+    }
+
+    .type-new {
+        background: #8b5cf6;
+        color: white;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #94a3b8;
+    }
+
+    .empty-state-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    .empty-state h3 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        color: #cbd5e1;
+    }
+
+    .empty-state p {
+        font-size: 1rem;
+        max-width: 400px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+        .notifications-header {
+            margin: 1rem;
+            padding: 1.5rem;
+        }
+
+        .notifications-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .notification-card {
+            margin: 1rem;
+            padding: 1.25rem;
+        }
+
+        .notification-actions {
+            flex-direction: column;
+        }
+
+        .action-btn {
+            justify-content: center;
+            padding: 0.75rem 1rem;
+        }
+    }
+
+    /* Animation for new notifications */
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .notification-card {
+        animation: slideInUp 0.4s ease-out;
+    }
+
+    .notification-card:nth-child(2) { animation-delay: 0.1s; }
+    .notification-card:nth-child(3) { animation-delay: 0.2s; }
+    .notification-card:nth-child(4) { animation-delay: 0.3s; }
 </style>
 
-<div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>🔔 Your Notifications</h2>
-        <a href="{% url 'clear_all' %}" class="btn btn-sm btn-danger">Clear All</a>
+<div class="container-fluid">
+    <!-- Header Section -->
+    <div class="notifications-header">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <h2>
+                <span class="bell-icon">🔔</span>
+                Your Notifications
+            </h2>
+            <a href="{% url 'clear_all' %}" class="clear-all-btn">
+                <i class="fas fa-trash-alt me-2"></i>
+                Clear All
+            </a>
+        </div>
     </div>
 
-    {% if notifications %}
-        {% for note in notifications %}
-            {% if not note.is_read and note.status == 'Pending' %}
-
-                    {% if note.item %}
+    <!-- Notifications Content -->
+    <div class="notification-container">
+        {% if notifications %}
+            {% for note in notifications %}
+                {% if not note.is_read and note.status == 'Pending' %}
+                    <div class="notification-card">
+                        <!-- Notification Type Indicator -->
                         {% if note.type == 'claim_request' %}
-                            <p>
-                                <strong>{{ note.sender }}</strong> wants to claim your item:
-                                <a href="{% url 'found_items_view' %}">{{ note.item.title }}</a>
-                            </p>
-                            <div class="notification-actions">
-                                <a href="{% url 'accept_request' note.id note.item.id %}" class="btn btn-success btn-sm">Accept</a>
-                                <a href="{% url 'reject_request' note.id note.item.id %}" class="btn btn-danger btn-sm">Reject</a>
+                            <div class="notification-type">
+                                <div class="type-icon type-claim">
+                                    <i class="fas fa-hand-paper"></i>
+                                </div>
+                                Claim Request
                             </div>
-
                         {% elif note.type == 'found_notification' %}
-                            <p>
-                                <strong>{{ note.sender }}</strong> found your item:
-                                <a href="{% url 'lost_items_view' %}">{{ note.item.title }}</a>
-                            </p>
-                            <div class="notification-actions">
-                                <a href="{% url 'accept_request' note.id note.item.id %}" class="btn btn-success btn-sm">Accept</a>
-                                <a href="{% url 'reject_request' note.id note.item.id %}" class="btn btn-danger btn-sm">Reject</a>
+                            <div class="notification-type">
+                                <div class="type-icon type-found">
+                                    <i class="fas fa-search"></i>
+                                </div>
+                                Item Found
                             </div>
-
                         {% else %}
-                            <p>
-                                <strong>{{ note.sender }}</strong> posted a new item:
-                                {% if note.item.type == 'Found' %}
-                                    <a href="{% url 'found_items_view' %}">{{ note.item.title }}</a>
-                                {% else %}
-                                    <a href="{% url 'lost_items_view' %}">{{ note.item.title }}</a>
-                                {% endif %}
-                            </p>
+                            <div class="notification-type">
+                                <div class="type-icon type-new">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                                New Item Posted
+                            </div>
                         {% endif %}
-                    {% else %}
-                        <p><strong>{{ note.sender }}</strong> posted a new item.</p>
-                    {% endif %}
-            {% endif %}
-        {% endfor %}
-    {% else %}
-        <p class="text-center mt-4">You have no notifications.</p>
-    {% endif %}
+
+                        <!-- Notification Content -->
+                        <div class="notification-content">
+                            {% if note.item %}
+                                {% if note.type == 'claim_request' %}
+                                    <div class="notification-text">
+                                        <strong>{{ note.sender }}</strong> wants to claim your item:
+                                        <a href="{% url 'found_items_view' %}" class="item-link">{{ note.item.title }}</a>
+                                    </div>
+                                    <div class="notification-actions">
+                                        <a href="{% url 'accept_request' note.id note.item.id %}" class="action-btn btn-accept">
+                                            <i class="fas fa-check"></i>
+                                            Accept
+                                        </a>
+                                        <a href="{% url 'reject_request' note.id note.item.id %}" class="action-btn btn-reject">
+                                            <i class="fas fa-times"></i>
+                                            Reject
+                                        </a>
+                                    </div>
+
+                                {% elif note.type == 'found_notification' %}
+                                    <div class="notification-text">
+                                        <strong>{{ note.sender }}</strong> found your item:
+                                        <a href="{% url 'lost_items_view' %}" class="item-link">{{ note.item.title }}</a>
+                                    </div>
+                                    <div class="notification-actions">
+                                        <a href="{% url 'accept_request' note.id note.item.id %}" class="action-btn btn-accept">
+                                            <i class="fas fa-check"></i>
+                                            Accept
+                                        </a>
+                                        <a href="{% url 'reject_request' note.id note.item.id %}" class="action-btn btn-reject">
+                                            <i class="fas fa-times"></i>
+                                            Reject
+                                        </a>
+                                    </div>
+
+                                {% else %}
+                                    <div class="notification-text">
+                                        <strong>{{ note.sender }}</strong> posted a new item:
+                                        {% if note.item.type == 'Found' %}
+                                            <a href="{% url 'found_items_view' %}" class="item-link">{{ note.item.title }}</a>
+                                        {% else %}
+                                            <a href="{% url 'lost_items_view' %}" class="item-link">{{ note.item.title }}</a>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            {% else %}
+                                <div class="notification-text">
+                                    <strong>{{ note.sender }}</strong> posted a new item.
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <!-- Empty State -->
+            <div class="empty-state">
+                <div class="empty-state-icon">📭</div>
+                <h3>No Notifications Yet</h3>
+                <p>You're all caught up! When someone interacts with your items or posts new items, you'll see notifications here.</p>
+            </div>
+        {% endif %}
+    </div>
 </div>
 
 {% endblock %}
