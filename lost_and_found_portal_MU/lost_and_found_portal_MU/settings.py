@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -75,13 +76,20 @@ WSGI_APPLICATION = 'lost_and_found_portal_MU.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
 }
 
 
+# Render
+DATABASES = {
+    'default': dj_database_url.config(default='postgresql://mu_lost_found_user:9kkMxQVsDN2VPTQZVIcw2kIXCZnnE557@dpg-d2nc93q4d50c73e6qfjg-a.oregon-postgres.render.com/mu_lost_found')
+}
+
+
+# Railway
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
@@ -148,5 +156,5 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'sudiptodeyhimel02@gmail.com'
+EMAIL_HOST_USER = 'sudiptodeyhimel02@gmail.com'     # use admin email
 EMAIL_HOST_PASSWORD = 'fsngfnlumykdxjpf'
