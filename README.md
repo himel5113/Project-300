@@ -7,9 +7,14 @@
 
 ---
 
+## 🌐 Live Demo
+Access the live project [MU Lost & Found Portal](https://project-300-0.onrender.com/).
+
+---
+
 ## 📖 Project Overview
 
-The **Lost & Found Portal MU** is a comprehensive web application designed specifically for Metropolitan University's community. It provides an efficient platform for students, faculty, and staff to report lost items, post found items, and facilitate the safe return of belongings through a streamlined claim management system.
+The **Lost & Found Portal MU** is a comprehensive web application designed specifically for Metropolitan University's community. It provides an efficient platform for students, faculty, and staff (currently only for students) to report lost items, post found items, and facilitate the safe return of belongings through a streamlined claim management system.
 
 ### Key Objectives
 
@@ -47,6 +52,11 @@ The **Lost & Found Portal MU** is a comprehensive web application designed speci
 - **Content Moderation**: Admin interface for managing posts and users
 - **Analytics Dashboard**: Track platform usage and success rates
 - **Backup System**: Automatic backups for deleted posts and user data
+
+---
+## 🎥 Demo Video
+
+Watch the full project demo on [MU Lost & Found Portal](https://youtu.be/QhHlWgT_syg).
 
 ---
 
@@ -157,7 +167,7 @@ Open your browser and navigate to: [http://127.0.0.1:8000/](http://127.0.0.1:800
   "mu_id": "string (required): Metropolitan University ID",
   "dept": "string (required): Department name",
   "phone": "string (optional): Contact number",
-  "year": "string (optional): Academic year"
+  "profileImage": "image (optional): User profile image"
 }
 ```
 
@@ -170,8 +180,8 @@ curl -X POST http://127.0.0.1:8000/signup/ \
     "name": "John Doe",
     "email": "john.doe@student.mu.edu",
     "password": "securepassword123",
-    "mu_id": "CSE-2021-001",
-    "dept": "Computer Science"
+    "mu_id": "222-115-201",
+    "dept": "CSE"
   }'
 ```
 
@@ -212,7 +222,7 @@ curl -X POST http://127.0.0.1:8000/signup/ \
     "id": 12345,
     "name": "John Doe",
     "email": "john.doe@student.mu.edu",
-    "dept": "Computer Science"
+    "dept": "CSE"
   }
 }
 ```
@@ -256,9 +266,10 @@ curl -X POST http://127.0.0.1:8000/signup/ \
     "id": 12345,
     "name": "John Doe",
     "email": "john.doe@student.mu.edu",
-    "mu_id": "CSE-2021-001",
-    "dept": "Computer Science",
+    "mu_id": "222-115-201",
+    "dept": "CSE",
     "phone": "+1234567890",
+    "profileImage": "media/profile_images/profile.jpg",
     "created_at": "2024-01-15T10:30:00Z"
   }
 }
@@ -280,7 +291,7 @@ curl -X POST http://127.0.0.1:8000/signup/ \
 {
   "name": "string (optional): Updated full name",
   "phone": "string (optional): Updated phone number",
-  "dept": "string (optional): Updated department"
+  "email": "string (optional): Updated email"
 }
 ```
 
@@ -301,10 +312,8 @@ curl -X POST http://127.0.0.1:8000/signup/ \
 ```
 title: string (required) - Item title
 description: string (required) - Detailed description
-category: string (required) - Item category
 item_type: string (required) - "lost" or "found"
 location: string (required) - Last known/found location
-contact_info: string (optional) - Additional contact details
 image: file (optional) - Item image
 ```
 
@@ -396,7 +405,6 @@ image: file (optional) - Item image
     "id": 789,
     "title": "iPhone 13 Pro",
     "description": "Black iPhone 13 Pro with cracked screen protector",
-    "category": "Electronics",
     "type": "lost",
     "location": "Main Library, 2nd Floor",
     "posted_by": {
@@ -636,8 +644,8 @@ Project-300/
 │   ├── 📁 media/                        # User uploaded files
 │   │   └── 📁 items/                    # Item images
 │   ├── 📄 db.sqlite3                    # SQLite database (development)
-│   └── 📄 manage.py                     # Django management script
-├── 📄 requirements.txt                  # Python dependencies
+│   ├── 📄 manage.py                     # Django management script
+│   └── 📄 requirements.txt              # Python dependencies
 ├── 📄 .env.example                      # Environment variables template
 ├── 📄 .gitignore                        # Git ignore rules
 ├── 📄 LICENSE                           # License file
@@ -738,6 +746,7 @@ python manage.py migrate --settings=settings.production
 
 ### Deployment Platforms
 
+- **Render**: Fully compatible for quick deployment.
 - **Heroku**: Ready for Heroku deployment with Procfile
 - **DigitalOcean**: Docker containerization support
 - **AWS**: EC2 and RDS compatible
@@ -814,13 +823,23 @@ Before creating an issue, please:
 - Include system information and error logs
 - Use appropriate issue labels
 
+---
+## Future Work
+- **Expand User Base:** Extend the platform to include faculty and staff, in addition to students.  
+- **Mobile Integration:** Develop a mobile application for seamless access across devices.  
+- **Real-Time Notifications:** Implement enhanced notifications via email and SMS for all users.  
+- **Admin Dashboard:** Introduce a comprehensive admin dashboard for efficient item and user management.  
+- **Unified Authentication:** Update the authentication system to integrate with the university’s central database for all users.
+
+---
+
 
 ## 👥 Development Team
 
 | Role                   | Name                    | Contact                                   |
 | ---------------------- | ----------------------- | ----------------------------------------- |
-| **Lead Developer**     | Sudipto Das Himel       | [GitHub](https://github.com/sudiptohimel) |
-| **Backend Developer**  | Md. Tanimur Rahman      | [GitHub](https://github.com/tanimur)      |
+| **Lead Developer**     | Sudipto Dey Himel       | [GitHub](https://github.com/himel5113) |
+| **Backend Developer**  | Md. Tanimur Rahman      | [GitHub](https://github.com/tanim-mishkat)      |
 
 
 ## 🔄 Changelog
@@ -834,6 +853,6 @@ Before creating an issue, please:
 - Notification management
 - Admin interface
 
-_Last Updated: January 2024_
+_Last Updated: August 2025_
 
 > **Note**: This documentation is actively maintained. For the most up-to-date information, please refer to the project repository.
