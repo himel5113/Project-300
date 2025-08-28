@@ -838,8 +838,8 @@ Before creating an issue, please:
 
 | Role                   | Name                    | Contact                                   |
 | ---------------------- | ----------------------- | ----------------------------------------- |
-| **Lead Developer**     | Sudipto Dey Himel       | [GitHub](https://github.com/himel5113) |
-| **Backend Developer**  | Md. Tanimur Rahman      | [GitHub](https://github.com/tanim-mishkat)      |
+| **Backend Developer**     | Sudipto Dey Himel       | [GitHub](https://github.com/himel5113) |
+| **Frontend Developer**  | Md. Tanimur Rahman      | [GitHub](https://github.com/tanim-mishkat)      |
 
 
 ## 🔄 Changelog
